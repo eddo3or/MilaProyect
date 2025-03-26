@@ -1,0 +1,15 @@
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */
+  grid-template-rows: repeat(2, 1fr);    /* Creates 2 equal rows */
+}
+
+.centrado-vertical {
+	display: flex;
+	flex-flow: column wrap;
+}
+
+.centrado-horizontal {
+	display: flex;
+	flex-flow: row wrap;
+}
