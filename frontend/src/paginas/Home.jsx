@@ -23,14 +23,14 @@ export default function Home() {
 		<div className="centrado-vertical">
 			<div><p>{date.toLocaleTimeString()}</p></div>
 
-			<div>
+			<div className="centrado-horizontal">
 				<div>
 					<p>
 						Bienvenid@ <br/>
 						Elija una opción
 					</p>
 				</div>
-				<div>
+				<div className="centrado-horizontal">
 					<IconButton>
 						<ArrowBackIcon/>
 					</IconButton>
