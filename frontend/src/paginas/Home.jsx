@@ -10,35 +10,16 @@ import ventas from '../assets/Ventas.png';
 
 import './css/Home.css';
 
+import BarraSuperior from '../componentes/BarraSuperior.jsx';
+
+function texto() {
+	return (<p>Bienvenid@. <br/> Elija una opción</p>);
+}
+
 export default function Home() {
-	var [date, setDate] = useState(new Date());
-	useEffect( () => {
-		var timer = setInterval(() => setDate(new Date(), 1000));
-		return function cleanup() {
-			clearInterval(timer);
-		}
-	});
-	
 	return (
 		<div className="centrado-vertical">
-			<div><p>{date.toLocaleTimeString()}</p></div>
-
-			<div className="centrado-horizontal">
-				<div>
-					<p>
-						Bienvenid@ <br/>
-						Elija una opción
-					</p>
-				</div>
-				<div className="centrado-horizontal">
-					<IconButton>
-						<ArrowBackIcon/>
-					</IconButton>
-					<IconButton>
-						<HomeIcon/>
-					</IconButton>
-				</div>
-			</div>
+			<BarraSuperior Texto={texto}/>
 
 			<div className="centrado-vertical">
 				<div className="centrado-horizontal">
