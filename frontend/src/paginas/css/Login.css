@@ -1,0 +1,7 @@
+.pagina {
+    height: 100%;
+    width: 100%;
+    background-image: url("../../assets/Fondo.jpg");
+    background-size: cover;
+    background-position: center;
+}
