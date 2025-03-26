@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
-import SaveIcon from "@mui/icons-material/Login";
+import LoginIcon from "@mui/icons-material/Login";
 
 import { useFormik } from "formik"; //Para crear el formulario
 import * as Yup from 'yup'
@@ -56,7 +56,7 @@ function Login() {
 
     return (
         <div className="pagina">
-            <Dialog open={true} fullWidth onClose={() => actualizarMostrar(false)} >
+            <Dialog open={true} fullWidth >
                 {/* ============ HANDLE SUBMIT (click en boton actualizar)============ */}
                 <form onSubmit={formik.handleSubmit}>
 
@@ -110,11 +110,11 @@ function Login() {
                             )}
                         </Box>
 
-                        {/* ============ BOTÓN INSERTAR ============ */}
+                        {/* ============ BOTÓN ENTRAR ============ */}
                         <LoadingButton
                             color="primary"
                             loadingPosition="start"
-                            startIcon={<SaveIcon />}
+                            startIcon={<LoginIcon />}
                             variant="contained"
                             type="submit" //Como es de tipo submit no requiere un onClick, se va a handleSubmit
                             disabled={!!mensajeExitoAlert}//Si hay un mensaje de éxito entonces no lo puedo presionar de nuevo
