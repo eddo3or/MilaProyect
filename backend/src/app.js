@@ -16,4 +16,8 @@ app.use(express.json());
 //COOKIEPARSER DEBE IR ANTES DE authRouter (DONDE SE UTILIZA)
 app.use(cookieParser());
 
+import routerAPI from './routes/index.js';
+
+routerAPI(app);
+
 export default app

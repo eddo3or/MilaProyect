@@ -1,4 +1,4 @@
-import Modelo from '../models/productos';
+import Modelo from '../models/productos.js';
 
 export const get_documentos = async () => {
     try {

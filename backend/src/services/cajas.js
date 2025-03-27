@@ -1,4 +1,4 @@
-import Modelo from '../models/cajas';
+import Modelo from '../models/cajas.js';
 
 export const get_documentos = async () => {
     try {

@@ -1,4 +1,4 @@
-import Modelo from '../models/usuarios';
+import Modelo from '../models/usuarios.js';
 
 export const get_documentos = async () => {
     try {

@@ -8,7 +8,7 @@ const esquema_productos = new mongoose.Schema({
         get: v => (v / 100).toFixed(2),
         set: v => v * 100
     },
-    cantidad: { type: number },
+    cantidad: { type: Number },
 }, { _id: true, strict: false, toJSON: { getters: true } });
 
 const esquema_ventas = new mongoose.Schema({

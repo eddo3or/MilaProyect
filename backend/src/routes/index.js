@@ -26,4 +26,4 @@ const routerAPI = (app) => {
 };
 
 //Se exportan las rutas configuradas para usarse en app.js
-module.exports = routerAPI;
+export default routerAPI;

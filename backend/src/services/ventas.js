@@ -1,4 +1,4 @@
-import Modelo from '../models/ventas';
+import Modelo from '../models/ventas.js';
 
 export const get_documentos = async () => {
     try {

@@ -1,4 +1,4 @@
-import Modelo from '../models/ofertas';
+import Modelo from '../models/ofertas.js';
 
 export const get_documentos = async () => {
     try {
