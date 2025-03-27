@@ -5,10 +5,11 @@ import LoginIcon from "@mui/icons-material/Login";
 
 import { useFormik } from "formik"; //Para crear el formulario
 import * as Yup from 'yup'
-import YupPassword from 'yup-password'
-YupPassword(Yup) // extend yup
 
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+
+import { useUsuarioContext } from "../ContextProvider";
 
 import './css/Login.css';
 
@@ -16,16 +17,19 @@ function Login() {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const { iniciar_sesion_context } = useUsuarioContext();
 
     //Configuración de formik (el formulario)
     const formik = useFormik({
         initialValues: {
-            Usuario: "",
-            Contraseña: "",
+            nombre: "",
+            password: "",
         },
         validationSchema: Yup.object({
-            Usuario: Yup.string().required("Campo requerido"),
-            Contraseña: Yup.string().password().required("Campo requerido"),
+            nombre: Yup.string().required("Campo requerido"),
+            password: Yup.string().required("Campo requerido"),
         }),
         /* ============ CÓDIGO OnSubmit SI TODO ESTÁ BIEN ============ */
         onSubmit: async (valoresFormulario) => {
@@ -35,10 +39,13 @@ function Login() {
             setMensajeExitoAlert(null);
 
             try {
+                await iniciar_sesion_context(valoresFormulario);
+                navigate('/home');
                 setMensajeExitoAlert("Sesión iniciada correctamente");
-            } catch (e) {
+            } catch (error) {
                 setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo iniciar sesión");
+                console.log(error);
             }
             setLoading(false);
         },
@@ -75,23 +82,23 @@ function Login() {
 
                         {/* Usuario */}
                         <TextField
-                            id="Usuario"
-                            label="Usuario"
+                            id="nombre"
+                            label="nombre"
                             value={formik.values.Nombre}
                             {...commonTextFieldProps}
-                            error={formik.touched.Usuario && Boolean(formik.errors.Usuario)}
-                            helperText={formik.touched.Usuario && formik.errors.Usuario}
+                            error={formik.touched.nombre && Boolean(formik.errors.nombre)}
+                            helperText={formik.touched.nombre && formik.errors.nombre}
                         />
 
-                        {/* Contraseña */}
+                        {/* password */}
                         <TextField
-                            id="Contraseña"
-                            label="Contraseña"
+                            id="password"
+                            label="password"
                             type="password"
-                            value={formik.values.Contraseña}
+                            value={formik.values.password}
                             {...commonTextFieldProps}
-                            error={formik.touched.Contraseña && Boolean(formik.errors.Contraseña)}
-                            helperText={formik.touched.Contraseña && formik.errors.Contraseña}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
                         />
 
                     </DialogContent>

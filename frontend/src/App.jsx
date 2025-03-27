@@ -1,7 +1,7 @@
 //imports bibliotecas
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import ContextProvider from './ContextProvider.jsx';
+import { ContextProvider } from './ContextProvider.jsx';
 
 //imports pages
 import Login from './paginas/Login.jsx';
