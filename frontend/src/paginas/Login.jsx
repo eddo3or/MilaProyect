@@ -84,7 +84,7 @@ function Login() {
                         <TextField
                             id="nombre"
                             label="nombre"
-                            value={formik.values.Nombre}
+                            value={formik.values.nombre}
                             {...commonTextFieldProps}
                             error={formik.touched.nombre && Boolean(formik.errors.nombre)}
                             helperText={formik.touched.nombre && formik.errors.nombre}

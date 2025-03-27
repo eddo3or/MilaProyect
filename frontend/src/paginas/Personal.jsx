@@ -10,6 +10,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
+import RegistrarPersonal from './formularios/RegistrarPersonal.jsx';
 
 import { get_usuarios } from '../api/api_usuarios.js';
 import { useEffect } from 'react';
@@ -50,16 +51,18 @@ export default function Personal() {
   const [personal, setPersonal] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
   const [seleccionado, setSeleccionado] = useState({ _id: null });
+  const [showRegistrar, setShowRegistrar] = useState(false);
+
+  const consultar = async () => {
+    try {
+      const res = await get_usuarios();
+      setPersonal(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
-    const consultar = async () => {
-      try {
-        const res = await get_usuarios();
-        setPersonal(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
     consultar();
   }, []);
 
@@ -96,25 +99,25 @@ export default function Personal() {
                   <Box>
                     {/* ============ BOTÓN AGREGAR ============ */}
                     <Tooltip title="Registrar personal">
-                      <IconButton onClick={() => setAddPriceShowModal(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <AddCircleIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN EDITAR ============ */}
-                    <Tooltip title="Editar">
-                      <IconButton onClick={() => setShowFormActualizar(true)}>
+                    <Tooltip title="Actualizar datos de personal seleccionado">
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN ELIMINAR ============ */}
                     <Tooltip title="Eliminar">
-                      <IconButton onClick={() => setShowFormEliminar(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN DETALLES ============ */}
                     <Tooltip title="Detalles">
-                      <IconButton onClick={() => setShowDetalles(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <InfoIcon />
                       </IconButton>
                     </Tooltip>
@@ -127,6 +130,7 @@ export default function Personal() {
           />
         </Box>
         {/* M O D A L E S */}
+        <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar}/>
       </Box>
     </div>
   );
