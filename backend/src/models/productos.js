@@ -12,10 +12,6 @@ const esquema_productos = new mongoose.Schema({
     proveedor: { type: String },
     color: { type: String },
     imagen: { type: mongoose.Schema.Types.ObjectId },
-},
-    {
-        toJSON: { getters: true }
-    }
-);
+}, { toJSON: { getters: true } });
 
 export default mongoose.model('producto', esquema_productos);

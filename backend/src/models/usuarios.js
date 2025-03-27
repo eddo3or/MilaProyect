@@ -11,10 +11,6 @@ const esquema_usuarios = new mongoose.Schema({
     curriculum: { type: mongoose.Schema.Types.ObjectId },
     domicilio: { type: String },
     telefono: { type: String }
-},
-    {
-        toJSON: { getters: true }
-    }
-);
+}, { toJSON: { getters: true } });
 
 export default mongoose.model('usuario', esquema_usuarios);
