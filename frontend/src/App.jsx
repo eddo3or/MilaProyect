@@ -8,6 +8,7 @@ import Login from './paginas/Login.jsx';
 import Home from "./paginas/Home.jsx";
 import Personal from './paginas/Personal.jsx';
 import Inventario from './paginas/Inventario.jsx';
+import Ofertas from './paginas/Ofertas.jsx';
 
 import './App.css'
 
@@ -20,6 +21,7 @@ function App() {
           <Route path='/home' element={<Home />} />
           <Route path='/personal' element={<Personal />} />
           <Route path='/inventario' element={<Inventario />} />
+          <Route path='/ofertas' element={<Ofertas />} />
         </Routes>
       </BrowserRouter>
     </ContextProvider>
