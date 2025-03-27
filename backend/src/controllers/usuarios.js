@@ -31,7 +31,7 @@ export const iniciar_sesion = async (req, res, next) => {
           para no estar pidiendo autenticarse a
           un usuario ya autenticado
         */
-        const token = await createAccessToken(usuarioEncontrado);
+        const token = await createAccessToken({ id: usuarioEncontrado._id, nombre: usuarioEncontrado.nombre });
 
         return res.cookie("token", token, { sameSite: "none", secure: true }).status(200).json(usuarioEncontrado);
 
@@ -39,6 +39,44 @@ export const iniciar_sesion = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const registrar_usuario = async (req, res) => {
+
+    const {
+        nombre,
+        password,
+        puesto,
+        salario,
+        domicilio,
+        telefono
+    } = req.body;
+
+    try {
+        const duplicados = await usuarios.find({ nombre, domicilio, telefono });
+        if (!(duplicados === undefined || duplicados.length == 0)) return res.status(500).json({ message: "No puedes registrar a un usuario dos veces" });
+
+        try {
+            const passwordHash = await bcrypt.hash(password, 10); //convierte el string en caracteres aleatoreos (lo encripta), el numero es el nivel
+
+            const usuarioNuevo = new usuarios({
+                nombre,
+                password: passwordHash,
+                puesto,
+                salario,
+                domicilio,
+                telefono
+            });
+
+            const usuarioRegistrado = await usuarioNuevo.save();
+            if (usuarioRegistrado) res.status(201).json({ message: "El usuario ha sido registrado con éxito" });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 
 //POST
 export const insertar_documento = async (req, res, next) => {
