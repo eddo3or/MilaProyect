@@ -1,5 +1,28 @@
 import Modelo from '../models/ventas';
 
+export const get_documentos = async () => {
+    try {
+        return await Modelo.find();
+    } catch (error) {
+        console.log(error.message);
+        return false;
+    }
+}
+
+export const get_documentos_por_fecha = async (fecha_inicio, fecha_fin) => {
+    try {
+        return await Modelo.find({
+            fecha: {
+                $gte: fecha_inicio,
+                $lte: fecha_fin
+            }
+        });
+    } catch (error) {
+        console.log(error.message);
+        return false;
+    }
+}
+
 export const insertar_documento = async (documento) => {
     try {
         const doc = new Modelo(documento);

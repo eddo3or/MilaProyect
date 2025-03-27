@@ -1,5 +1,14 @@
 import Modelo from '../models/cajas';
 
+export const get_documentos = async () => {
+    try {
+        return await Modelo.find();
+    } catch (error) {
+        console.log(error.message);
+        return false;
+    }
+}
+
 export const insertar_documento = async (documento) => {
     try {
         const doc = new Modelo(documento);
@@ -61,6 +70,19 @@ export const eliminar_subdocumento = async (id, id_subdoc) => {
             { $pull: { historial: { _id: id_subdoc } } }
         );
         return deletedItem;
+    } catch (error) {
+        console.log("Error: ", error.message);
+        return false;
+    }
+}
+
+export const get_ventas_fecha = async (id, fecha_venta) => {
+    try {
+        return await Modelo.find({
+            fecha: {
+                $eq: fecha_venta
+            }
+        });
     } catch (error) {
         console.log("Error: ", error.message);
         return false;

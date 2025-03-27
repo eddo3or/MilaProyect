@@ -1,5 +1,14 @@
 import Modelo from '../models/pedidos';
 
+export const get_documentos = async () => {
+    try {
+        return await Modelo.find();
+    } catch (error) {
+        console.log(error.message);
+        return false;
+    }
+}
+
 export const insertar_documento = async (documento) => {
     try {
         const doc = new Modelo(documento);
