@@ -1,4 +1,7 @@
 import * as Servicios from '../services/usuarios.js';
+import usuarios from '../models/usuarios.js';
+import bcrypt from "bcryptjs"; //modulo para encriptar la contraseña
+import { createAccessToken } from "./jwt.js"
 
 export const get_documentos = async (req, res, next) => {
     try {
@@ -12,6 +15,30 @@ export const get_documentos = async (req, res, next) => {
         return res.status(500).json({ error });
     }
 };
+
+export const iniciar_sesion = async (req, res, next) => {
+    const { nombre, password } = req.body;
+
+    try {
+        const usuarioEncontrado = await usuarios.findOne({ nombre });
+        if (!usuarioEncontrado) return res.status(400).json({ message: "Usuario o contraseña incorrectos" });
+
+        const coincide = bcrypt.compare(password, usuarioEncontrado.password);
+        if (!coincide) return res.status(400).json({ message: "Usuario o contraseña incorrectos" });
+
+        /*
+          Se crea el token y se pasa el frontend
+          para no estar pidiendo autenticarse a
+          un usuario ya autenticado
+        */
+        const token = await createAccessToken(usuarioEncontrado);
+
+        return res.cookie("token", token, { sameSite: "none", secure: true }).status(200).json(usuarioEncontrado);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 //POST
 export const insertar_documento = async (req, res, next) => {
