@@ -1,8 +1,6 @@
-import {useState, useEffect} from 'react';
-import IconButton from '@mui/material/IconButton';
+import { useNavigate } from 'react-router-dom';
+
 import Button from '@mui/material/Button';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import HomeIcon from '@mui/icons-material/Home';
 import gancho from '../assets/Inventario.png';
 import etiquetas from '../assets/Ofertas.png';
 import persona from '../assets/Persona.png';
@@ -17,25 +15,27 @@ function texto() {
 }
 
 export default function Home() {
+    const navigate = useNavigate();
+
 	return (
-		<div className="centrado-vertical">
+		<div className="centrado-vertical" style={{ gap: '30%'}}>
 			<BarraSuperior Texto={texto}/>
 
-			<div className="centrado-vertical">
-				<div className="centrado-horizontal">
-					<Button variant="contained" startIcon={<img src={gancho} alt="inventario" />}>
+			<div className="centrado-vertical" style={{ gap: '10%'}}>
+				<div className="centrado-horizontal" style={{ gap: '10%'}}>
+					<Button className="boton-home" onClick={() => navigate('/inventario')} variant="contained" startIcon={<img className="imagen-boton" src={gancho} alt="inventario" />}>
 						Inventario
 					</Button>
-					<Button variant="contained" startIcon={<img src={persona} alt="personal" />}>
+					<Button className="boton-home" onClick={() => navigate('/personal')} variant="contained" startIcon={<img className="imagen-boton" src={persona} alt="personal" />}>
 						Personal
 					</Button>
 					
 				</div>
-				<div className="centrado-horizontal">
-					<Button variant="contained" startIcon={<img src={etiquetas} alt="ofertas" />}>
+				<div className="centrado-horizontal" style={{ gap: '10%'}}>
+					<Button className="boton-home" variant="contained" startIcon={<img className="imagen-boton" src={etiquetas} alt="ofertas" />}>
 						Ofertas
 					</Button>
-					<Button variant="contained" startIcon={<img src={ventas} alt="ventas" />}>
+					<Button className="boton-home" variant="contained" startIcon={<img className="imagen-boton" src={ventas} alt="ventas" />}>
 						Ventas
 					</Button>
 				</div>

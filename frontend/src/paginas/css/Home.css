@@ -4,9 +4,19 @@
   grid-template-rows: repeat(2, 1fr);    /* Creates 2 equal rows */
 }
 
+.boton-home {
+	width: 30%;
+	height: 20%;
+}
+
+.imagen-boton {
+	width: 25%;
+}
+
 .centrado-vertical {
 	display: flex;
-	flex-flow: column wrap;
+	flex-flow: column nowrap;
+	margin: 1%;
 }
 
 .centrado-horizontal {
