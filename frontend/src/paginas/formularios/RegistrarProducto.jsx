@@ -3,33 +3,34 @@ import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 
-import { registrar_usuario } from "../../api/api_usuarios.js";
+import { insertar_producto } from "../../api/api_productos.js";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { useState } from "react";
 
-export default function RegistrarPersonal({ show, setShow, refresh }) {
+export default function RegistrarProducto({ show, setShow, refresh }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
+
     const formik = useFormik({
         initialValues: {
             nombre: "",
-            password: "",
-            puesto: "",
-            salario: "",
-            domicilio: "",
-            telefono: "",
+            talla: "",
+            precio: "",
+            unidades: "",
+            proveedor: "",
+            color: "",
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
-            password: Yup.string().required("Campo requerido"),
-            puesto: Yup.string().required("Campo requerido"),
-            salario: Yup.string().required("Campo requerido"),
-            domicilio: Yup.string().required("Campo requerido"),
-            telefono: Yup.string().required("Campo requerido"),
+            talla: Yup.string().required("Campo requerido"),
+            precio: Yup.string().required("Campo requerido"),
+            unidades: Yup.string().required("Campo requerido"),
+            proveedor: Yup.string().required("Campo requerido"),
+            color: Yup.string().required("Campo requerido"),
         }),
         onSubmit: async (values) => {
             setLoading(true);
@@ -38,12 +39,12 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                await registrar_usuario(values);
-                setMensajeExitoAlert("Usuario creado y guardado correctamente");
+                await insertar_producto(values);
+                setMensajeExitoAlert("Producto creado y guardado correctamente");
                 refresh();
             } catch (e) {
                 setMensajeExitoAlert(null);
-                setMensajeErrorAlert("No se pudo crear el usuario");
+                setMensajeErrorAlert("No se pudo crear el producto");
                 console.log(e);
             }
             setLoading(false);
@@ -86,47 +87,46 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                     />
 
                     <TextField
-                        id="password"
-                        label="password"
-                        type="password"
-                        value={formik.values.password}
+                        id="talla"
+                        label="talla"
+                        value={formik.values.talla}
                         {...commonTextFieldProps}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
+                        error={formik.touched.talla && Boolean(formik.errors.talla)}
+                        helperText={formik.touched.talla && formik.errors.talla}
                     />
 
                     <TextField
-                        id="puesto"
-                        label="puesto"
-                        value={formik.values.puesto}
+                        id="precio"
+                        label="precio"
+                        value={formik.values.precio}
                         {...commonTextFieldProps}
-                        error={formik.touched.puesto && Boolean(formik.errors.puesto)}
-                        helperText={formik.touched.puesto && formik.errors.puesto}
+                        error={formik.touched.precio && Boolean(formik.errors.precio)}
+                        helperText={formik.touched.precio && formik.errors.precio}
                     />
                     <TextField
-                        id="salario"
-                        label="salario"
-                        value={formik.values.salario}
+                        id="unidades"
+                        label="unidades"
+                        value={formik.values.unidades}
                         {...commonTextFieldProps}
-                        error={formik.touched.salario && Boolean(formik.errors.salario)}
-                        helperText={formik.touched.salario && formik.errors.salario}
+                        error={formik.touched.unidades && Boolean(formik.errors.unidades)}
+                        helperText={formik.touched.unidades && formik.errors.unidades}
                     />
                     <TextField
-                        id="domicilio"
-                        label="domicilio"
-                        value={formik.values.domicilio}
+                        id="proveedor"
+                        label="proveedor"
+                        value={formik.values.proveedor}
                         {...commonTextFieldProps}
-                        error={formik.touched.domicilio && Boolean(formik.errors.domicilio)}
-                        helperText={formik.touched.domicilio && formik.errors.domicilio}
+                        error={formik.touched.proveedor && Boolean(formik.errors.proveedor)}
+                        helperText={formik.touched.proveedor && formik.errors.proveedor}
                     />
 
                     <TextField
-                        id="telefono"
-                        label="telefono"
-                        value={formik.values.telefono}
+                        id="color"
+                        label="color"
+                        value={formik.values.color}
                         {...commonTextFieldProps}
-                        error={formik.touched.telefono && Boolean(formik.errors.telefono)}
-                        helperText={formik.touched.telefono && formik.errors.telefono}
+                        error={formik.touched.color && Boolean(formik.errors.color)}
+                        helperText={formik.touched.color && formik.errors.color}
                     />
 
                 </DialogContent>

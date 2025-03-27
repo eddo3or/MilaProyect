@@ -1,6 +1,6 @@
 
 import { MaterialReactTable } from 'material-react-table';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Stack, Tooltip, Box } from "@mui/material";
 import { IconButton } from "@mui/material";
 
@@ -10,6 +10,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
+
+import RegistrarProducto from './formularios/RegistrarProducto.jsx';
+import { get_productos } from '../api/api_productos.js';
+
 
 function texto() {
   return (<p>Inventario</p>);
@@ -51,17 +55,21 @@ const columnas_tabla = [
 export default function Inventario() {
   const [productos, setProductos] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
-  const actualizar_price_seleccionado = async (values) => {
-    setLoadingTable(s => true);
-    //Si values es null entonces si inicializa un objeto vacío
-    //Para que no "truenen" las tablas de los subdocumentos
-    if (!values) {
-      setProductos({ _id: null });
-    } else {
-      setProductos(values);
+  const [seleccionado, setSeleccionado] = useState({ _id: null });
+  const [showRegistrar, setShowRegistrar] = useState(false);
+
+  const consultar = async () => {
+    try {
+      const res = await get_productos();
+      setProductos(res.data);
+    } catch (error) {
+      console.log(error);
     }
-    setLoadingTable(s => false);
-  };
+  }
+
+  useEffect(() => {
+    consultar();
+  }, []);
 
   return (
     <div className="centrado-vertical">
@@ -86,7 +94,7 @@ export default function Inventario() {
             /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
             muiSelectCheckboxProps={({ row }) => ({
               onClick: (event) => {
-                actualizar_price_seleccionado(row.original);
+                setSeleccionado(row.original);
               }
             })}
             renderTopToolbarCustomActions={({ table }) => (
@@ -96,25 +104,25 @@ export default function Inventario() {
                   <Box>
                     {/* ============ BOTÓN AGREGAR ============ */}
                     <Tooltip title="Registrar producto">
-                      <IconButton onClick={() => setAddPriceShowModal(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <AddCircleIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN EDITAR ============ */}
                     <Tooltip title="Editar">
-                      <IconButton onClick={() => setShowFormActualizar(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN ELIMINAR ============ */}
                     <Tooltip title="Eliminar">
-                      <IconButton onClick={() => setShowFormEliminar(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN DETALLES ============ */}
                     <Tooltip title="Imagen del producto">
-                      <IconButton onClick={() => setShowDetalles(true)}>
+                      <IconButton onClick={() => setShowRegistrar(true)}>
                         <InfoIcon />
                       </IconButton>
                     </Tooltip>
@@ -127,6 +135,7 @@ export default function Inventario() {
           />
         </Box>
         {/* M O D A L E S */}
+        <RegistrarProducto show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
       </Box>
     </div>
   );
