@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 
 const esquema_usuarios = new mongoose.Schema({
     puesto: { type: String, enum: ['cajero', 'gerente'] },
+    password: { type: String },
     nombre: { type: String },
     salario: {
         type: Number,
