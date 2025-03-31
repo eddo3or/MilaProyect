@@ -23,7 +23,7 @@ export const iniciar_sesion = async (req, res, next) => {
         const usuarioEncontrado = await usuarios.findOne({ nombre });
         if (!usuarioEncontrado) return res.status(400).json({ message: "Usuario o contraseña incorrectos" });
 
-        const coincide = bcrypt.compare(password, usuarioEncontrado.password);
+        const coincide = await bcrypt.compare(password, usuarioEncontrado.password);
         if (!coincide) return res.status(400).json({ message: "Usuario o contraseña incorrectos" });
 
         /*
