@@ -35,7 +35,7 @@ export default function Home() {
 						<Image
 							rounded="md"
 							fit="contain"
-							width="40%"
+							width="30%"
 							src="/src/assets/Inventario.png"
 						/>
 						<Button size="xl">
@@ -50,7 +50,7 @@ export default function Home() {
 						<Image
 							rounded="md"
 							fit="contain"
-							width="40%"
+							width="30%"
 							src="/src/assets/Persona.png"
 						/>
 						<Button size="xl">
@@ -65,7 +65,7 @@ export default function Home() {
 						<Image
 							rounded="md"
 							fit="contain"
-							width="40%"
+							width="30%"
 							src="/src/assets/Ofertas.png"
 						/>
 						<Button size="xl">
@@ -81,7 +81,7 @@ export default function Home() {
 							rounded="md"
 							fit="contain"
 							src="/src/assets/Ventas.png"
-							width="40%"
+							width="30%"
 						/>
 						<Button size="xl">
 							Ventas
