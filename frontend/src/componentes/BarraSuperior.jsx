@@ -31,14 +31,14 @@ export default function BarraSuperior({ Texto }) {
 				</Text>
 			</HStack>
 
-			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4">
+			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>
 				<Texto />
 				<Group>
-					<Button size="2xl" color="purple.600" variant="ghost">
+					<Button size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
 						<ArrowBackIcon />
 						Regresar
 					</Button>
-					<Button size="2xl" color="purple.600" variant="ghost">
+					<Button size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
 						<HomeIcon />
 						Inicio
 					</Button>

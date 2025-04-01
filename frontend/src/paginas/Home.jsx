@@ -89,13 +89,11 @@ export default function Home() {
 					</Group>
 				</GridItem>
 
+				<Button size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
+					<LogoutIcon />
+					Salir
+				</Button>
 			</SimpleGrid>
-
-			<Button size="2xl" color="purple.600" variant="ghost">
-				<LogoutIcon />
-				Salir
-			</Button>
-
 		</Stack>
 	);
 }
