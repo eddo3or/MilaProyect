@@ -38,8 +38,7 @@ export default function Home() {
 							width="30%"
 							src="/src/assets/Inventario.png"
 						/>
-						<Button size="xl">
-
+						<Button onClick={() => navigate("/inventario")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
 							Inventario
 						</Button>
 					</Group>
@@ -53,8 +52,7 @@ export default function Home() {
 							width="30%"
 							src="/src/assets/Persona.png"
 						/>
-						<Button size="xl">
-
+						<Button onClick={() => navigate("/personal")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
 							Personal
 						</Button>
 					</Group>
@@ -68,8 +66,7 @@ export default function Home() {
 							width="30%"
 							src="/src/assets/Ofertas.png"
 						/>
-						<Button size="xl">
-
+						<Button onClick={() => navigate("/ofertas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
 							Ofertas
 						</Button>
 					</Group>
@@ -83,13 +80,13 @@ export default function Home() {
 							src="/src/assets/Ventas.png"
 							width="30%"
 						/>
-						<Button size="xl">
+						<Button onClick={() => navigate("/ventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
 							Ventas
 						</Button>
 					</Group>
 				</GridItem>
 
-				<Button size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
+				<Button onClick={() => console.log("TODO: Cerrar sesión")} size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
 					<LogoutIcon />
 					Salir
 				</Button>

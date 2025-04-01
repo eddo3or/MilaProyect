@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { Button, Flex, Stack, HStack, Group, Text } from "@chakra-ui/react"
 
@@ -11,6 +11,7 @@ import HomeIcon from '@mui/icons-material/Home';
 export default function BarraSuperior({ Texto }) {
 	const { usuario } = useUsuarioContext();
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	var [date, setDate] = useState(new Date());
 	useEffect(() => {
@@ -22,6 +23,7 @@ export default function BarraSuperior({ Texto }) {
 
 	return (
 		<Stack>
+
 			<HStack color="purple" justifyContent="space-between" paddingLeft="6" paddingRight="6" paddingTop="2">
 				<Text textStyle="2xl">
 					{date.toLocaleTimeString()}
@@ -33,18 +35,22 @@ export default function BarraSuperior({ Texto }) {
 
 			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>
 				<Texto />
-				<Group>
-					<Button size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
-						<ArrowBackIcon />
-						Regresar
-					</Button>
-					<Button size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
-						<HomeIcon />
-						Inicio
-					</Button>
-				</Group>
+				{
+					!(location.pathname === "/home") && (
+						< Group >
+							<Button onClick={() => navigate(-1)} size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
+								<ArrowBackIcon />
+								Regresar
+							</Button>
+							<Button onClick={() => navigate("/home")} size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
+								<HomeIcon />
+								Inicio
+							</Button>
+						</Group>
+					)
+				}
 			</Flex>
 
-		</Stack>
+		</Stack >
 	);
 }
