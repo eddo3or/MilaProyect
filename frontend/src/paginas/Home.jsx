@@ -1,46 +1,101 @@
 import { useNavigate } from 'react-router-dom';
 
-import Button from '@mui/material/Button';
 import gancho from '../assets/Inventario.png';
 import etiquetas from '../assets/Ofertas.png';
 import persona from '../assets/Persona.png';
 import ventas from '../assets/Ventas.png';
 
-import './css/Home.css';
-
+import { Stack, Text, SimpleGrid, GridItem, Button, Image, Group } from '@chakra-ui/react'
+import LogoutIcon from '@mui/icons-material/Logout';
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 function texto() {
-	return (<p>Bienvenid@. <br /> Elija una opción</p>);
+	return (
+		<Stack color="white">
+			<Text textStyle="5xl">
+				Bienvenid@
+			</Text>
+			<Text textStyle="2xl">
+				Elija una opción
+			</Text>
+		</Stack>
+	);
 }
 
 export default function Home() {
 	const navigate = useNavigate();
 
 	return (
-		<div className="centrado-vertical" style={{ gap: '30%' }}>
+		<Stack h="full" bgGradient="to-r" gradientFrom="red.200" gradientTo="blue.200">
 			<BarraSuperior Texto={texto} />
 
-			<div className="centrado-vertical" style={{ gap: '10%' }}>
-				<div className="centrado-horizontal" style={{ gap: '10%' }}>
-					<Button className="boton-home" onClick={() => navigate('/inventario')} variant="contained" startIcon={<img className="imagen-boton" src={gancho} alt="inventario" />}>
-						Inventario
-					</Button>
-					<Button className="boton-home" onClick={() => navigate('/personal')} variant="contained" startIcon={<img className="imagen-boton" src={persona} alt="personal" />}>
-						Personal
-					</Button>
+			<SimpleGrid columns={2} gap={"40px"} >
+				<GridItem>
+					<Group>
+						<Image
+							rounded="md"
+							fit="contain"
+							width="40%"
+							src="/src/assets/Inventario.png"
+						/>
+						<Button size="xl">
 
-				</div>
-				<div className="centrado-horizontal" style={{ gap: '10%' }}>
-					<Button className="boton-home" onClick={() => navigate('/ofertas')} variant="contained" startIcon={<img className="imagen-boton" src={etiquetas} alt="ofertas" />}>
-						Ofertas
-					</Button>
-					<Button className="boton-home" onClick={() => navigate('/ventas')} variant="contained" startIcon={<img className="imagen-boton" src={ventas} alt="ventas" />}>
-						Ventas
-					</Button>
-				</div>
-			</div>
+							Inventario
+						</Button>
+					</Group>
+				</GridItem>
 
-		</div>
+				<GridItem>
+					<Group>
+						<Image
+							rounded="md"
+							fit="contain"
+							width="40%"
+							src="/src/assets/Persona.png"
+						/>
+						<Button size="xl">
+
+							Personal
+						</Button>
+					</Group>
+				</GridItem>
+
+				<GridItem>
+					<Group>
+						<Image
+							rounded="md"
+							fit="contain"
+							width="40%"
+							src="/src/assets/Ofertas.png"
+						/>
+						<Button size="xl">
+
+							Ofertas
+						</Button>
+					</Group>
+				</GridItem>
+
+				<GridItem>
+					<Group>
+						<Image
+							rounded="md"
+							fit="contain"
+							src="/src/assets/Ventas.png"
+							width="40%"
+						/>
+						<Button size="xl">
+							Ventas
+						</Button>
+					</Group>
+				</GridItem>
+
+			</SimpleGrid>
+
+			<Button size="2xl" color="purple.600" variant="ghost">
+				<LogoutIcon />
+				Salir
+			</Button>
+
+		</Stack>
 	);
 }

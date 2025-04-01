@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
+import { Button, Flex, Stack, HStack, Group, Text } from "@chakra-ui/react"
+
 import { useUsuarioContext } from '../ContextProvider';
 
-import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeIcon from '@mui/icons-material/Home';
 
@@ -20,26 +21,30 @@ export default function BarraSuperior({ Texto }) {
 	});
 
 	return (
-		<div className="centrado-vertical">
-			<div className="centrado-horizontal" style={{ justifyContent: 'space-between' }}>
-				<p>{date.toLocaleTimeString()}</p>
-				<p>{usuario.nombre}</p>
-			</div>
+		<Stack>
+			<HStack color="purple" justifyContent="space-between" paddingLeft="6" paddingRight="6" paddingTop="2">
+				<Text textStyle="2xl">
+					{date.toLocaleTimeString()}
+				</Text>
+				<Text textStyle="2xl">
+					{usuario.nombre}
+				</Text>
+			</HStack>
 
-			<div className="centrado-horizontal" style={{ justifyContent: 'space-between' }}>
-				<div>
-					<Texto />
-				</div>
-				<div className="centrado-horizontal">
-					<IconButton onClick={() => navigate(-1)}>
+			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4">
+				<Texto />
+				<Group>
+					<Button size="2xl" color="purple.600" variant="ghost">
 						<ArrowBackIcon />
-					</IconButton>
-					<IconButton onClick={() => navigate("/home")}>
+						Regresar
+					</Button>
+					<Button size="2xl" color="purple.600" variant="ghost">
 						<HomeIcon />
-					</IconButton>
-				</div>
-			</div>
+						Inicio
+					</Button>
+				</Group>
+			</Flex>
 
-		</div>
+		</Stack>
 	);
 }
