@@ -4,29 +4,28 @@ import SaveIcon from "@mui/icons-material/Save";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-import { registrar_usuario } from "../../api/api_usuarios.js";
+import { actualizar_usuario } from "../../api/api_usuarios.js";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function RegistrarPersonal({ show, setShow, refresh }) {
+export default function ActualizarPersonal({ show, setShow, refresh, seleccionado }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
+
     const formik = useFormik({
         initialValues: {
-            nombre: "",
-            password: "",
-            puesto: "gerente",
-            salario: "",
-            domicilio: "",
-            telefono: "",
+            nombre: seleccionado.nombre,
+            puesto: seleccionado.puesto,
+            salario: seleccionado.salario,
+            domicilio: seleccionado.domicilio,
+            telefono: seleccionado.telefono,
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
-            password: Yup.string().required("Campo requerido"),
             puesto: Yup.string().required("Campo requerido"),
             salario: Yup.string().required("Campo requerido"),
             domicilio: Yup.string().required("Campo requerido"),
@@ -39,7 +38,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                await registrar_usuario(values);
+                await actualizar_usuario(seleccionado._id, values);
                 setMensajeExitoAlert("Usuario creado y guardado correctamente");
                 refresh();
             } catch (error) {
@@ -58,6 +57,32 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
         margin: "dense",
         disabled: !!mensajeExitoAlert,
     };
+
+    useEffect(() => {
+        formik.setFieldValue("nombre", seleccionado.nombre);
+        formik.setFieldValue("puesto", seleccionado.puesto);
+        formik.setFieldValue("salario", seleccionado.salario);
+        formik.setFieldValue("domicilio", seleccionado.domicilio);
+        formik.setFieldValue("telefono", seleccionado.telefono);
+    }, [seleccionado]);
+
+    if (!seleccionado._id && !mensajeExitoAlert) {
+        return (
+            <Dialog open={show} onClose={() => setShow(false)} fullWidth>
+
+                <DialogTitle style={{ textAlign: 'center' }}>
+                    NO has seleccionado un registro de la tabla!
+                </DialogTitle>
+
+                <DialogContent style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="contained" color="primary" onClick={() => setShow(false)}>
+                        Cerrar
+                    </Button>
+                </DialogContent>
+
+            </Dialog>
+        );
+    }
 
     return (
         <Dialog
@@ -84,16 +109,6 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                         {...commonTextFieldProps}
                         error={formik.touched.nombre && Boolean(formik.errors.nombre)}
                         helperText={formik.touched.nombre && formik.errors.nombre}
-                    />
-
-                    <TextField
-                        id="password"
-                        label="password"
-                        type="password"
-                        value={formik.values.password}
-                        {...commonTextFieldProps}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
                     />
 
                     <Select
@@ -161,13 +176,12 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                             setShow(false)
                             setMensajeErrorAlert(null);
                             setMensajeExitoAlert(null);
-                            formik.resetForm();
                         }}
                     >
-                        <span>CERRAR</span>
+                        <span>Cerrar</span>
                     </Button>
 
-                    {/* FIC: Boton de Guardar. */}
+                    {/* Boton de Actualizar */}
                     <Button
                         color="primary"
                         loadingPosition="start"
@@ -178,7 +192,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                         loading={Loading}
                     >
 
-                        <span>Insertar</span>
+                        <span>Actualizar</span>
                     </Button>
                 </DialogActions>
             </form>

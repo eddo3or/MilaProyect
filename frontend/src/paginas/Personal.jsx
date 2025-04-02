@@ -15,6 +15,7 @@ import EliminarPersonal from './formularios/EliminarPersonal.jsx';
 
 import { get_usuarios } from '../api/api_usuarios.js';
 import { useEffect } from 'react';
+import ActualizarPersonal from './formularios/ActualizarPersonal.jsx';
 
 function texto() {
   return (<p>Personal</p>);
@@ -54,6 +55,7 @@ export default function Personal() {
   const [seleccionado, setSeleccionado] = useState({ _id: null });
   const [showRegistrar, setShowRegistrar] = useState(false);
   const [showEliminar, setShowEliminar] = useState(false);
+  const [showActualizar, setShowActualizar] = useState(false);
 
   const consultar = async () => {
     try {
@@ -107,7 +109,7 @@ export default function Personal() {
                     </Tooltip>
                     {/* ============ BOTÓN EDITAR ============ */}
                     <Tooltip title="Actualizar datos de personal seleccionado">
-                      <IconButton onClick={() => setShowRegistrar(true)}>
+                      <IconButton onClick={() => setShowActualizar(true)}>
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
@@ -134,6 +136,7 @@ export default function Personal() {
         {/* M O D A L E S */}
         <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar}/>
         <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado}/>
+        <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado}/>
       </Box>
     </div>
   );
