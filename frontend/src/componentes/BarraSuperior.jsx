@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { Button, Flex, Stack, HStack, Box, Text } from "@chakra-ui/react"
+import { Button, Flex, Stack, HStack, Group, Text } from "@chakra-ui/react"
 
 import { useUsuarioContext } from '../ContextProvider';
 
@@ -37,7 +37,7 @@ export default function BarraSuperior({ Texto }) {
 				<Texto />
 				{
 					!(location.pathname == "/home") && (
-						<Box >
+						< Group >
 							<Button onClick={() => navigate(-1)} size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
 								<ArrowBackIcon />
 								Regresar
@@ -46,7 +46,7 @@ export default function BarraSuperior({ Texto }) {
 								<HomeIcon />
 								Inicio
 							</Button>
-						</Box>
+						</Group>
 					)
 				}
 			</Flex>
