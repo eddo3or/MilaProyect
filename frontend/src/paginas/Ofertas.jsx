@@ -13,6 +13,7 @@ import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 import RegistrarOferta from './formularios/RegistrarOferta.jsx';
 import { get_ofertas } from '../api/api_ofertas.js';
+import EliminarOferta from './formularios/EliminarOferta.jsx';
 
 function texto() {
     return (<p>Ofertas</p>);
@@ -56,6 +57,7 @@ export default function Ofertas() {
     const [loadingTable, setLoadingTable] = useState(false);
     const [seleccionado, setSeleccionado] = useState({ _id: null });
     const [showRegistrar, setShowRegistrar] = useState(false);
+    const [showEliminar, setShowEliminar] = useState(false);
 
     const consultar = async () => {
         try {
@@ -115,7 +117,7 @@ export default function Ofertas() {
                                         </Tooltip>
                                         {/* ============ BOTÓN ELIMINAR ============ */}
                                         <Tooltip title="Eliminar">
-                                            <IconButton onClick={() => setShowRegistrar(true)}>
+                                            <IconButton onClick={() => setShowEliminar(true)}>
                                                 <DeleteIcon />
                                             </IconButton>
                                         </Tooltip>
@@ -135,6 +137,7 @@ export default function Ofertas() {
                 </Box>
                 {/* M O D A L E S */}
                 <RegistrarOferta show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
+                <EliminarOferta show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
             </Box>
         </div>
     );
