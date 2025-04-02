@@ -40,6 +40,13 @@ export const iniciar_sesion = async (req, res, next) => {
     }
 }
 
+export const cerrar_sesion = async (req, res) => {
+    res.cookie("token", "", {
+        expires: new Date(0)
+    });
+    return res.sendStatus(200);
+}
+
 export const registrar_usuario = async (req, res) => {
 
     const {

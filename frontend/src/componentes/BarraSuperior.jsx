@@ -36,7 +36,7 @@ export default function BarraSuperior({ Texto }) {
 			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>
 				<Texto />
 				{
-					!(location.pathname === "/home") && (
+					!(location.pathname == "/home") && (
 						< Group >
 							<Button onClick={() => navigate(-1)} size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
 								<ArrowBackIcon />

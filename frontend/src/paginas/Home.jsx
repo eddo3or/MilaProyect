@@ -1,15 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 
-import gancho from '../assets/Inventario.png';
-import etiquetas from '../assets/Ofertas.png';
-import persona from '../assets/Persona.png';
-import ventas from '../assets/Ventas.png';
-
-import { Stack, Text, SimpleGrid, GridItem, Button, Image, Group } from '@chakra-ui/react'
+import { Stack, Text, SimpleGrid, GridItem, Button, Image, Group, Center } from '@chakra-ui/react'
 import LogoutIcon from '@mui/icons-material/Logout';
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 function texto() {
+	const navigate = useNavigate();
+
 	return (
 		<Stack color="white">
 			<Text textStyle="5xl">
@@ -26,12 +23,12 @@ export default function Home() {
 	const navigate = useNavigate();
 
 	return (
-		<Stack h="full" bgGradient="to-r" gradientFrom="red.200" gradientTo="blue.200">
+		<Stack h="full" bgGradient="to-t" gradientFrom="red.200" gradientTo="blue.200">
 			<BarraSuperior Texto={texto} />
 
 			<SimpleGrid columns={2} gap={"40px"} >
 				<GridItem>
-					<Group>
+					<Center>
 						<Image
 							rounded="md"
 							fit="contain"
@@ -39,13 +36,15 @@ export default function Home() {
 							src="/src/assets/Inventario.png"
 						/>
 						<Button onClick={() => navigate("/inventario")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							Inventario
+							<Text textStyle="3xl">
+								Inventario
+							</Text>
 						</Button>
-					</Group>
+					</Center>
 				</GridItem>
 
 				<GridItem>
-					<Group>
+					<Center>
 						<Image
 							rounded="md"
 							fit="contain"
@@ -53,13 +52,16 @@ export default function Home() {
 							src="/src/assets/Persona.png"
 						/>
 						<Button onClick={() => navigate("/personal")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							Personal
+							<Text textStyle="3xl">
+								Personal
+							</Text>
+
 						</Button>
-					</Group>
+					</Center>
 				</GridItem>
 
 				<GridItem>
-					<Group>
+					<Center>
 						<Image
 							rounded="md"
 							fit="contain"
@@ -67,13 +69,16 @@ export default function Home() {
 							src="/src/assets/Ofertas.png"
 						/>
 						<Button onClick={() => navigate("/ofertas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							Ofertas
+							<Text textStyle="3xl">
+								Ofertas
+							</Text>
+
 						</Button>
-					</Group>
+					</Center>
 				</GridItem>
 
 				<GridItem>
-					<Group>
+					<Center>
 						<Image
 							rounded="md"
 							fit="contain"
@@ -81,16 +86,24 @@ export default function Home() {
 							width="30%"
 						/>
 						<Button onClick={() => navigate("/ventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							Ventas
+							<Text textStyle="3xl">
+								Ventas
+							</Text>
 						</Button>
-					</Group>
+					</Center>
 				</GridItem>
-
-				<Button onClick={() => console.log("TODO: Cerrar sesión")} size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
-					<LogoutIcon />
-					Salir
-				</Button>
 			</SimpleGrid>
+
+			<Center>
+				<Button onClick={() => navigate("/logout")} size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
+					<LogoutIcon />
+					<Text textStyle="2xl">
+						Salir
+					</Text>
+
+				</Button>
+			</Center>
+
 		</Stack>
 	);
 }

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 
-import { iniciar_sesion } from "./api/api_usuarios";
+import { iniciar_sesion, cerrar_sesion } from "./api/api_usuarios";
 
 //Se crea el contexto
 const UsuarioContext = createContext();
@@ -27,11 +27,23 @@ export function ContextProvider({ children }) {
         setIsAuthenticated(true);
     }
 
+    const cerrar_sesion_context = async () => {
+        try {
+            await cerrar_sesion();
+            setIsAuthenticated(false);
+            setUsuario([]);
+        } catch (error) {
+            console.log(error.response.data);
+            throw error;
+        }
+    }
+
     return (
         <UsuarioContext.Provider value={{
             usuario,
             isAuthenticated,
-            iniciar_sesion_context
+            iniciar_sesion_context,
+            cerrar_sesion_context
         }}>
             {children}
         </UsuarioContext.Provider>

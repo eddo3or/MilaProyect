@@ -10,6 +10,7 @@ router.post('/iniciar_sesion', Controller.iniciar_sesion);
 router.post('/registrar_usuario', Controller.registrar_usuario);
 
 router.put('/actualizar_documento/:id', Controller.actualizar_documento);
+router.put('/cerrar_sesion', Controller.cerrar_sesion);
 
 router.delete('/eliminar_documento/:id', Controller.eliminar_documento);
 
