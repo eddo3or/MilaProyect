@@ -39,11 +39,11 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
 
             try {
                 await actualizar_usuario(seleccionado._id, values);
-                setMensajeExitoAlert("Usuario creado y guardado correctamente");
+                setMensajeExitoAlert("Actualizado correctamente");
                 refresh();
             } catch (error) {
                 setMensajeExitoAlert(null);
-                setMensajeErrorAlert("No se pudo crear el usuario");
+                setMensajeErrorAlert("No se pudo actualizar");
                 console.log(error.response.data);
             }
             setLoading(false);
@@ -93,7 +93,7 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar empleado nuevo</strong>
+                        <strong>Actualizar registro</strong>
                     </Typography>
                 </DialogTitle>
                 <DialogContent
