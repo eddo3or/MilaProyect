@@ -27,8 +27,8 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
             talla: Yup.string().required("Campo requerido"),
-            precio: Yup.string().required("Campo requerido"),
-            unidades: Yup.string().required("Campo requerido"),
+            precio: Yup.number().required("Campo requerido"),
+            unidades: Yup.number().required("Campo requerido"),
             proveedor: Yup.string().required("Campo requerido"),
             color: Yup.string().required("Campo requerido"),
         }),
@@ -45,7 +45,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             } catch (e) {
                 setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo crear el producto");
-                console.log(e);
+                console.log(e.response.data);
             }
             setLoading(false);
         },
