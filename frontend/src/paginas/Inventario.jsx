@@ -12,7 +12,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 import RegistrarProducto from './formularios/RegistrarProducto.jsx';
+import EliminarProducto from './formularios/EliminarProducto.jsx';
 import { get_productos } from '../api/api_productos.js';
+import ActualizarProducto from './formularios/ActualizarProducto.jsx';
 
 
 function texto() {
@@ -57,6 +59,8 @@ export default function Inventario() {
   const [loadingTable, setLoadingTable] = useState(false);
   const [seleccionado, setSeleccionado] = useState({ _id: null });
   const [showRegistrar, setShowRegistrar] = useState(false);
+  const [showEliminar, setShowEliminar] = useState(false);
+  const [showActualizar, setShowActualizar] = useState(false);
 
   const consultar = async () => {
     try {
@@ -109,14 +113,14 @@ export default function Inventario() {
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN EDITAR ============ */}
-                    <Tooltip title="Editar">
-                      <IconButton onClick={() => setShowRegistrar(true)}>
+                    <Tooltip title="Actualizar">
+                      <IconButton onClick={() => setShowActualizar(true)}>
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
                     {/* ============ BOTÓN ELIMINAR ============ */}
                     <Tooltip title="Eliminar">
-                      <IconButton onClick={() => setShowRegistrar(true)}>
+                      <IconButton onClick={() => setShowEliminar(true)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
@@ -136,6 +140,8 @@ export default function Inventario() {
         </Box>
         {/* M O D A L E S */}
         <RegistrarProducto show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
+        <EliminarProducto show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
+        <ActualizarProducto show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
       </Box>
     </div>
   );

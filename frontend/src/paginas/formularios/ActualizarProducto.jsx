@@ -1,27 +1,28 @@
-import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem, Button } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-
-import { insertar_producto } from "../../api/api_productos.js";
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { actualizar_producto } from "../../api/api_productos.js";
 
-export default function RegistrarProducto({ show, setShow, refresh }) {
+export default function ActualizarProducto({ show, setShow, refresh, seleccionado }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
 
     const formik = useFormik({
         initialValues: {
-            nombre: "",
-            talla: "UNITALLA",
-            precio: "",
-            unidades: "",
-            proveedor: "",
-            color: "",
+            nombre: seleccionado.nombre,
+            talla: seleccionado.talla,
+            precio: seleccionado.precio,
+            unidades: seleccionado.unidades,
+            proveedor: seleccionado.proveedor,
+            color: seleccionado.color,
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
@@ -38,13 +39,13 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                await insertar_producto(values);
-                setMensajeExitoAlert("Producto creado y guardado correctamente");
+                await actualizar_producto(seleccionado._id, values);
+                setMensajeExitoAlert("Actualizado correctamente");
                 refresh();
-            } catch (e) {
+            } catch (error) {
                 setMensajeExitoAlert(null);
-                setMensajeErrorAlert("No se pudo crear el producto");
-                console.log(e.response.data);
+                setMensajeErrorAlert("No se pudo actualizar");
+                console.log(error.response.data);
             }
             setLoading(false);
         },
@@ -58,6 +59,33 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
         disabled: !!mensajeExitoAlert,
     };
 
+    useEffect(() => {
+        formik.setFieldValue("nombre", seleccionado.nombre);
+        formik.setFieldValue("talla", seleccionado.talla);
+        formik.setFieldValue("precio", seleccionado.precio);
+        formik.setFieldValue("unidades", seleccionado.unidades);
+        formik.setFieldValue("proveedor", seleccionado.proveedor);
+        formik.setFieldValue("color", seleccionado.color);
+    }, [seleccionado]);
+
+    if (!seleccionado._id && !mensajeExitoAlert) {
+        return (
+            <Dialog open={show} onClose={() => setShow(false)} fullWidth>
+
+                <DialogTitle style={{ textAlign: 'center' }}>
+                    NO has seleccionado un registro de la tabla!
+                </DialogTitle>
+
+                <DialogContent style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="contained" color="primary" onClick={() => setShow(false)}>
+                        Cerrar
+                    </Button>
+                </DialogContent>
+
+            </Dialog>
+        );
+    }
+
     return (
         <Dialog
             open={show}
@@ -67,15 +95,11 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar producto nuevo</strong>
+                        <strong>Actualizar registro</strong>
                     </Typography>
                 </DialogTitle>
-                <DialogContent
-                    sx={{ display: 'flex', flexDirection: 'column' }}
-                    dividers
-                >
+                <DialogContent sx={{ display: 'flex', flexDirection: 'column' }} dividers>
 
-                    {/* FIC: Campos de captura o selección */}
                     <TextField
                         id="nombre"
                         label="nombre"
@@ -161,13 +185,12 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                             setShow(false)
                             setMensajeErrorAlert(null);
                             setMensajeExitoAlert(null);
-                            formik.resetForm();
                         }}
                     >
-                        <span>CERRAR</span>
+                        <span>Cerrar</span>
                     </Button>
 
-                    {/* FIC: Boton de Guardar. */}
+                    {/* Boton de Actualizar */}
                     <Button
                         color="primary"
                         loadingPosition="start"
@@ -178,7 +201,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         loading={Loading}
                     >
 
-                        <span>Insertar</span>
+                        <span>Actualizar</span>
                     </Button>
                 </DialogActions>
             </form>

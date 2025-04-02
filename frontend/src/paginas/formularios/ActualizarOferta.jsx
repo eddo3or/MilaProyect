@@ -4,33 +4,33 @@ import SaveIcon from "@mui/icons-material/Save";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-import { registrar_usuario } from "../../api/api_usuarios.js";
-
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { actualizar_oferta } from "../../api/api_ofertas.js";
 
-export default function RegistrarPersonal({ show, setShow, refresh }) {
+export default function ActualizarOferta({ show, setShow, refresh, seleccionado }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
+
     const formik = useFormik({
         initialValues: {
-            nombre: "",
-            password: "",
-            puesto: "gerente",
-            salario: "",
-            domicilio: "",
-            telefono: "",
+            nombre: seleccionado.nombre,
+            descuento: seleccionado.descuento,
+            inicio: seleccionado.inicio,
+            fin: seleccionado.fin,
+            estatus: seleccionado.estatus,
+            descripcion: seleccionado.descripcion,
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
-            password: Yup.string().required("Campo requerido"),
-            puesto: Yup.string().required("Campo requerido"),
-            salario: Yup.string().required("Campo requerido"),
-            domicilio: Yup.string().required("Campo requerido"),
-            telefono: Yup.string().required("Campo requerido"),
+            descuento: Yup.number().required("Campo requerido"),
+            inicio: Yup.date().required("Campo requerido"),
+            fin: Yup.date().required("Campo requerido"),
+            estatus: Yup.string().required("Campo requerido"),
+            descripcion: Yup.string().required("Campo requerido"),
         }),
         onSubmit: async (values) => {
             setLoading(true);
@@ -39,12 +39,12 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                await registrar_usuario(values);
-                setMensajeExitoAlert("Usuario creado y guardado correctamente");
+                await actualizar_oferta(seleccionado._id, values);
+                setMensajeExitoAlert("Actualizado correctamente");
                 refresh();
             } catch (error) {
                 setMensajeExitoAlert(null);
-                setMensajeErrorAlert("No se pudo crear el usuario");
+                setMensajeErrorAlert("No se pudo actualizar");
                 console.log(error.response.data);
             }
             setLoading(false);
@@ -59,6 +59,33 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
         disabled: !!mensajeExitoAlert,
     };
 
+    useEffect(() => {
+        formik.setFieldValue("nombre", seleccionado.nombre);
+        formik.setFieldValue("descuento", seleccionado.descuento);
+        formik.setFieldValue("inicio", seleccionado.inicio);
+        formik.setFieldValue("fin", seleccionado.fin);
+        formik.setFieldValue("estatus", seleccionado.estatus);
+        formik.setFieldValue("descripcion", seleccionado.descripcion);
+    }, [seleccionado]);
+
+    if (!seleccionado._id && !mensajeExitoAlert) {
+        return (
+            <Dialog open={show} onClose={() => setShow(false)} fullWidth>
+
+                <DialogTitle style={{ textAlign: 'center' }}>
+                    NO has seleccionado un registro de la tabla!
+                </DialogTitle>
+
+                <DialogContent style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="contained" color="primary" onClick={() => setShow(false)}>
+                        Cerrar
+                    </Button>
+                </DialogContent>
+
+            </Dialog>
+        );
+    }
+
     return (
         <Dialog
             open={show}
@@ -68,15 +95,11 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar empleado nuevo</strong>
+                        <strong>Actualizar registro</strong>
                     </Typography>
                 </DialogTitle>
-                <DialogContent
-                    sx={{ display: 'flex', flexDirection: 'column' }}
-                    dividers
-                >
+                <DialogContent sx={{ display: 'flex', flexDirection: 'column' }} dividers>
 
-                    {/* FIC: Campos de captura o selección */}
                     <TextField
                         id="nombre"
                         label="nombre"
@@ -87,51 +110,50 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                     />
 
                     <TextField
-                        id="password"
-                        label="password"
-                        type="password"
-                        value={formik.values.password}
+                        id="descuento"
+                        label="descuento"
+                        value={formik.values.descuento}
                         {...commonTextFieldProps}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
+                        error={formik.touched.descuento && Boolean(formik.errors.descuento)}
+                        helperText={formik.touched.descuento && formik.errors.descuento}
+                    />
+
+                    <TextField
+                        id="inicio"
+                        label="inicio"
+                        value={formik.values.inicio}
+                        {...commonTextFieldProps}
+                        error={formik.touched.inicio && Boolean(formik.errors.inicio)}
+                        helperText={formik.touched.inicio && formik.errors.inicio}
+                    />
+                    <TextField
+                        id="fin"
+                        label="fin"
+                        value={formik.values.fin}
+                        {...commonTextFieldProps}
+                        error={formik.touched.fin && Boolean(formik.errors.fin)}
+                        helperText={formik.touched.fin && formik.errors.fin}
                     />
 
                     <Select
-                        id="puesto"
-                        label="puesto"
-                        name="puesto"
-                        value={formik.values.puesto}
+                        id="estatus"
+                        label="estatus"
+                        name="estatus"
+                        value={formik.values.estatus}
                         {...commonTextFieldProps}
-                        error={formik.touched.puesto && Boolean(formik.errors.puesto)}
+                        error={formik.touched.estatus && Boolean(formik.errors.estatus)}
                     >
-                        <MenuItem value={"gerente"}>Gerente</MenuItem>
-                        <MenuItem value={"cajero"}>Cajero</MenuItem>
+                        <MenuItem value={"Activo"}>Activo</MenuItem>
+                        <MenuItem value={"Inactivo"}>Inactivo</MenuItem>
                     </Select>
 
                     <TextField
-                        id="salario"
-                        label="salario"
-                        value={formik.values.salario}
+                        id="descripcion"
+                        label="descripcion"
+                        value={formik.values.descripcion}
                         {...commonTextFieldProps}
-                        error={formik.touched.salario && Boolean(formik.errors.salario)}
-                        helperText={formik.touched.salario && formik.errors.salario}
-                    />
-                    <TextField
-                        id="domicilio"
-                        label="domicilio"
-                        value={formik.values.domicilio}
-                        {...commonTextFieldProps}
-                        error={formik.touched.domicilio && Boolean(formik.errors.domicilio)}
-                        helperText={formik.touched.domicilio && formik.errors.domicilio}
-                    />
-
-                    <TextField
-                        id="telefono"
-                        label="telefono"
-                        value={formik.values.telefono}
-                        {...commonTextFieldProps}
-                        error={formik.touched.telefono && Boolean(formik.errors.telefono)}
-                        helperText={formik.touched.telefono && formik.errors.telefono}
+                        error={formik.touched.descripcion && Boolean(formik.errors.descripcion)}
+                        helperText={formik.touched.descripcion && formik.errors.descripcion}
                     />
 
                 </DialogContent>
@@ -161,13 +183,12 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                             setShow(false)
                             setMensajeErrorAlert(null);
                             setMensajeExitoAlert(null);
-                            formik.resetForm();
                         }}
                     >
-                        <span>CERRAR</span>
+                        <span>Cerrar</span>
                     </Button>
 
-                    {/* FIC: Boton de Guardar. */}
+                    {/* Boton de Actualizar */}
                     <Button
                         color="primary"
                         loadingPosition="start"
@@ -178,7 +199,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                         loading={Loading}
                     >
 
-                        <span>Insertar</span>
+                        <span>Actualizar</span>
                     </Button>
                 </DialogActions>
             </form>

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
@@ -21,7 +21,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             descuento: "",
             inicio: "",
             fin: "",
-            estatus: "",
+            estatus: "Activo",
             descripcion: "",
         },
         validationSchema: Yup.object({
@@ -68,15 +68,11 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar Nuevo Precio</strong>
+                        <strong>Agregar nueva oferta</strong>
                     </Typography>
                 </DialogTitle>
-                <DialogContent
-                    sx={{ display: 'flex', flexDirection: 'column' }}
-                    dividers
-                >
+                <DialogContent sx={{ display: 'flex', flexDirection: 'column' }} dividers>
 
-                    {/* FIC: Campos de captura o selección */}
                     <TextField
                         id="nombre"
                         label="nombre"
@@ -111,14 +107,18 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         error={formik.touched.fin && Boolean(formik.errors.fin)}
                         helperText={formik.touched.fin && formik.errors.fin}
                     />
-                    <TextField
+
+                    <Select
                         id="estatus"
                         label="estatus"
+                        name="estatus"
                         value={formik.values.estatus}
                         {...commonTextFieldProps}
                         error={formik.touched.estatus && Boolean(formik.errors.estatus)}
-                        helperText={formik.touched.estatus && formik.errors.estatus}
-                    />
+                    >
+                        <MenuItem value={"Activo"}>Activo</MenuItem>
+                        <MenuItem value={"Inactivo"}>Inactivo</MenuItem>
+                    </Select>
 
                     <TextField
                         id="descripcion"

@@ -5,7 +5,7 @@ const esquema_ofertas = new mongoose.Schema({
     descuento: { type: Number, min: [1, 'No puede haber descuentos del 0%'], max: 100 },
     inicio: { type: Date },
     fin: { type: Date },
-    estatus: { type: String, enum: ['activo', 'inactivo', 'vencido'] },
+    estatus: { type: String, enum: ['Activo', 'Inactivo', 'Vencido'] },
     descripcion: { type: String },
 });
 

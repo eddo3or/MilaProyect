@@ -1,35 +1,35 @@
-import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem, Button } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
-import { insertar_producto } from "../../api/api_productos.js";
+import { actualizar_usuario } from "../../api/api_usuarios.js";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function RegistrarProducto({ show, setShow, refresh }) {
+export default function ActualizarPersonal({ show, setShow, refresh, seleccionado }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
 
     const formik = useFormik({
         initialValues: {
-            nombre: "",
-            talla: "UNITALLA",
-            precio: "",
-            unidades: "",
-            proveedor: "",
-            color: "",
+            nombre: seleccionado.nombre,
+            puesto: seleccionado.puesto,
+            salario: seleccionado.salario,
+            domicilio: seleccionado.domicilio,
+            telefono: seleccionado.telefono,
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
-            talla: Yup.string().required("Campo requerido"),
-            precio: Yup.number().required("Campo requerido"),
-            unidades: Yup.number().required("Campo requerido"),
-            proveedor: Yup.string().required("Campo requerido"),
-            color: Yup.string().required("Campo requerido"),
+            puesto: Yup.string().required("Campo requerido"),
+            salario: Yup.string().required("Campo requerido"),
+            domicilio: Yup.string().required("Campo requerido"),
+            telefono: Yup.string().required("Campo requerido"),
         }),
         onSubmit: async (values) => {
             setLoading(true);
@@ -38,13 +38,13 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                await insertar_producto(values);
-                setMensajeExitoAlert("Producto creado y guardado correctamente");
+                await actualizar_usuario(seleccionado._id, values);
+                setMensajeExitoAlert("Actualizado correctamente");
                 refresh();
-            } catch (e) {
+            } catch (error) {
                 setMensajeExitoAlert(null);
-                setMensajeErrorAlert("No se pudo crear el producto");
-                console.log(e.response.data);
+                setMensajeErrorAlert("No se pudo actualizar");
+                console.log(error.response.data);
             }
             setLoading(false);
         },
@@ -58,6 +58,32 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
         disabled: !!mensajeExitoAlert,
     };
 
+    useEffect(() => {
+        formik.setFieldValue("nombre", seleccionado.nombre);
+        formik.setFieldValue("puesto", seleccionado.puesto);
+        formik.setFieldValue("salario", seleccionado.salario);
+        formik.setFieldValue("domicilio", seleccionado.domicilio);
+        formik.setFieldValue("telefono", seleccionado.telefono);
+    }, [seleccionado]);
+
+    if (!seleccionado._id && !mensajeExitoAlert) {
+        return (
+            <Dialog open={show} onClose={() => setShow(false)} fullWidth>
+
+                <DialogTitle style={{ textAlign: 'center' }}>
+                    NO has seleccionado un registro de la tabla!
+                </DialogTitle>
+
+                <DialogContent style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="contained" color="primary" onClick={() => setShow(false)}>
+                        Cerrar
+                    </Button>
+                </DialogContent>
+
+            </Dialog>
+        );
+    }
+
     return (
         <Dialog
             open={show}
@@ -67,7 +93,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar producto nuevo</strong>
+                        <strong>Actualizar registro</strong>
                     </Typography>
                 </DialogTitle>
                 <DialogContent
@@ -86,52 +112,41 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                     />
 
                     <Select
-                        id="talla"
-                        label="talla"
-                        name="talla"
-                        value={formik.values.talla}
+                        id="puesto"
+                        label="puesto"
+                        name="puesto"
+                        value={formik.values.puesto}
                         {...commonTextFieldProps}
-                        error={formik.touched.talla && Boolean(formik.errors.talla)}
+                        error={formik.touched.puesto && Boolean(formik.errors.puesto)}
                     >
-                        <MenuItem value={"UNITALLA"}>Unitalla</MenuItem>
-                        <MenuItem value={"S"}>Chica (S)</MenuItem>
-                        <MenuItem value={"M"}>Mediana (M)</MenuItem>
-                        <MenuItem value={"L"}>Grande (L)</MenuItem>
-                        <MenuItem value={"XL"}>Extra grande (XL)</MenuItem>
+                        <MenuItem value={"gerente"}>Gerente</MenuItem>
+                        <MenuItem value={"cajero"}>Cajero</MenuItem>
                     </Select>
 
                     <TextField
-                        id="precio"
-                        label="precio"
-                        value={formik.values.precio}
+                        id="salario"
+                        label="salario"
+                        value={formik.values.salario}
                         {...commonTextFieldProps}
-                        error={formik.touched.precio && Boolean(formik.errors.precio)}
-                        helperText={formik.touched.precio && formik.errors.precio}
+                        error={formik.touched.salario && Boolean(formik.errors.salario)}
+                        helperText={formik.touched.salario && formik.errors.salario}
                     />
                     <TextField
-                        id="unidades"
-                        label="unidades"
-                        value={formik.values.unidades}
+                        id="domicilio"
+                        label="domicilio"
+                        value={formik.values.domicilio}
                         {...commonTextFieldProps}
-                        error={formik.touched.unidades && Boolean(formik.errors.unidades)}
-                        helperText={formik.touched.unidades && formik.errors.unidades}
-                    />
-                    <TextField
-                        id="proveedor"
-                        label="proveedor"
-                        value={formik.values.proveedor}
-                        {...commonTextFieldProps}
-                        error={formik.touched.proveedor && Boolean(formik.errors.proveedor)}
-                        helperText={formik.touched.proveedor && formik.errors.proveedor}
+                        error={formik.touched.domicilio && Boolean(formik.errors.domicilio)}
+                        helperText={formik.touched.domicilio && formik.errors.domicilio}
                     />
 
                     <TextField
-                        id="color"
-                        label="color"
-                        value={formik.values.color}
+                        id="telefono"
+                        label="telefono"
+                        value={formik.values.telefono}
                         {...commonTextFieldProps}
-                        error={formik.touched.color && Boolean(formik.errors.color)}
-                        helperText={formik.touched.color && formik.errors.color}
+                        error={formik.touched.telefono && Boolean(formik.errors.telefono)}
+                        helperText={formik.touched.telefono && formik.errors.telefono}
                     />
 
                 </DialogContent>
@@ -161,13 +176,12 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                             setShow(false)
                             setMensajeErrorAlert(null);
                             setMensajeExitoAlert(null);
-                            formik.resetForm();
                         }}
                     >
-                        <span>CERRAR</span>
+                        <span>Cerrar</span>
                     </Button>
 
-                    {/* FIC: Boton de Guardar. */}
+                    {/* Boton de Actualizar */}
                     <Button
                         color="primary"
                         loadingPosition="start"
@@ -178,7 +192,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         loading={Loading}
                     >
 
-                        <span>Insertar</span>
+                        <span>Actualizar</span>
                     </Button>
                 </DialogActions>
             </form>
