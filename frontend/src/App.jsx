@@ -2,7 +2,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { ContextProvider } from './ContextProvider.jsx';
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 //imports pages
 import Login from './paginas/Login.jsx';
@@ -17,7 +16,6 @@ import './App.css'
 
 function App() {
   return (
-    <ChakraProvider value={defaultSystem}>
       <ContextProvider>
         <BrowserRouter>
           <Routes>
@@ -31,7 +29,6 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ContextProvider>
-    </ChakraProvider>
   )
 }
 
