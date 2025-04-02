@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
@@ -18,7 +18,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
     const formik = useFormik({
         initialValues: {
             nombre: "",
-            talla: "",
+            talla: "UNITALLA",
             precio: "",
             unidades: "",
             proveedor: "",
@@ -68,7 +68,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar Nuevo Precio</strong>
+                        <strong>Agregar producto nuevo</strong>
                     </Typography>
                 </DialogTitle>
                 <DialogContent
@@ -86,14 +86,20 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         helperText={formik.touched.nombre && formik.errors.nombre}
                     />
 
-                    <TextField
+                    <Select
                         id="talla"
                         label="talla"
+                        name="talla"
                         value={formik.values.talla}
                         {...commonTextFieldProps}
                         error={formik.touched.talla && Boolean(formik.errors.talla)}
-                        helperText={formik.touched.talla && formik.errors.talla}
-                    />
+                    >
+                        <MenuItem value={"UNITALLA"}>Unitalla</MenuItem>
+                        <MenuItem value={"S"}>Chica (S)</MenuItem>
+                        <MenuItem value={"M"}>Mediana (M)</MenuItem>
+                        <MenuItem value={"L"}>Grande (L)</MenuItem>
+                        <MenuItem value={"XL"}>Extra grande (XL)</MenuItem>
+                    </Select>
 
                     <TextField
                         id="precio"

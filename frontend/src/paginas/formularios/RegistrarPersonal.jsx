@@ -2,6 +2,9 @@ import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogAction
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 import { registrar_usuario } from "../../api/api_usuarios.js";
 
@@ -18,7 +21,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
         initialValues: {
             nombre: "",
             password: "",
-            puesto: "",
+            puesto: "gerente",
             salario: "",
             domicilio: "",
             telefono: "",
@@ -41,10 +44,10 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                 await registrar_usuario(values);
                 setMensajeExitoAlert("Usuario creado y guardado correctamente");
                 refresh();
-            } catch (e) {
+            } catch (error) {
                 setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo crear el usuario");
-                console.log(e);
+                console.log(error.response.data);
             }
             setLoading(false);
         },
@@ -67,7 +70,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             <form onSubmit={formik.handleSubmit}>
                 <DialogTitle>
                     <Typography component="h6">
-                        <strong>Agregar Nuevo Precio</strong>
+                        <strong>Agregar empleado nuevo</strong>
                     </Typography>
                 </DialogTitle>
                 <DialogContent
@@ -95,14 +98,18 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                         helperText={formik.touched.password && formik.errors.password}
                     />
 
-                    <TextField
+                    <Select
                         id="puesto"
                         label="puesto"
+                        name="puesto"
                         value={formik.values.puesto}
                         {...commonTextFieldProps}
                         error={formik.touched.puesto && Boolean(formik.errors.puesto)}
-                        helperText={formik.touched.puesto && formik.errors.puesto}
-                    />
+                    >
+                        <MenuItem value={"gerente"}>Gerente</MenuItem>
+                        <MenuItem value={"cajero"}>Cajero</MenuItem>
+                    </Select>
+
                     <TextField
                         id="salario"
                         label="salario"
