@@ -17,10 +17,10 @@ export const get_documentos = async (req, res, next) => {
 };
 
 export const iniciar_sesion = async (req, res, next) => {
-    const { nombre, password } = req.body;
+    const { usuario, password } = req.body;
 
     try {
-        const usuarioEncontrado = await usuarios.findOne({ nombre });
+        const usuarioEncontrado = await usuarios.findOne({ usuario });
         if (!usuarioEncontrado) return res.status(400).json({ message: "Usuario o contraseña incorrectos" });
 
         const coincide = await bcrypt.compare(password, usuarioEncontrado.password);
@@ -51,6 +51,7 @@ export const registrar_usuario = async (req, res) => {
 
     const {
         nombre,
+        usuario,
         password,
         puesto,
         salario,
@@ -67,6 +68,7 @@ export const registrar_usuario = async (req, res) => {
 
             const usuarioNuevo = new usuarios({
                 nombre,
+                usuario,
                 password: passwordHash,
                 puesto,
                 salario,

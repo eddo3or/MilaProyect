@@ -37,6 +37,11 @@ const columnas_tabla = [
     size: 100,
   },
   {
+    accessorKey: "usuario",
+    header: "usuario",
+    size: 100,
+  },
+  {
     accessorKey: "salario",
     header: "Salario",
     size: 50,
@@ -121,13 +126,6 @@ export default function Personal() {
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
-                {/* ============ BOTÓN DETALLES ============ */}
-                <Tooltip title="Detalles">
-                  <IconButton onClick={() => setShowRegistrar(true)}>
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
-
               </Box>
             </Stack>
             {/* ------- BARRA DE ACCIONES FIN ------ */}

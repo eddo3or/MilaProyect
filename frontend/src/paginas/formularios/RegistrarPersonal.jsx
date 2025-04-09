@@ -18,6 +18,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
     const formik = useFormik({
         initialValues: {
             nombre: "",
+            usuario: "",
             password: "",
             puesto: "gerente",
             salario: "",
@@ -26,6 +27,7 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
+            usuario: Yup.string().required("Campo requerido"),
             password: Yup.string().required("Campo requerido"),
             puesto: Yup.string().required("Campo requerido"),
             salario: Yup.string().required("Campo requerido"),
@@ -84,6 +86,15 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                         {...commonTextFieldProps}
                         error={formik.touched.nombre && Boolean(formik.errors.nombre)}
                         helperText={formik.touched.nombre && formik.errors.nombre}
+                    />
+
+                    <TextField
+                        id="usuario"
+                        label="usuario"
+                        value={formik.values.usuario}
+                        {...commonTextFieldProps}
+                        error={formik.touched.usuario && Boolean(formik.errors.usuario)}
+                        helperText={formik.touched.usuario && formik.errors.usuario}
                     />
 
                     <TextField

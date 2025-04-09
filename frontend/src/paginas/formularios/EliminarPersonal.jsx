@@ -74,6 +74,13 @@ export default function EliminarPersonal({ show, setShow, refresh, seleccionado 
                     {...commonTextFieldProps}
                 />
 
+                <TextField
+                    id="usuario"
+                    label="usuario"
+                    value={seleccionado.usuario}
+                    {...commonTextFieldProps}
+                />
+
                 <Select
                     id="puesto"
                     label="puesto"

@@ -19,6 +19,7 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
     const formik = useFormik({
         initialValues: {
             nombre: seleccionado.nombre,
+            usuario: seleccionado.usuario,
             puesto: seleccionado.puesto,
             salario: seleccionado.salario,
             domicilio: seleccionado.domicilio,
@@ -26,6 +27,7 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required("Campo requerido"),
+            usuario: Yup.string().required("Campo requerido"),
             puesto: Yup.string().required("Campo requerido"),
             salario: Yup.string().required("Campo requerido"),
             domicilio: Yup.string().required("Campo requerido"),
@@ -60,6 +62,7 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
 
     useEffect(() => {
         formik.setFieldValue("nombre", seleccionado.nombre);
+        formik.setFieldValue("usuario", seleccionado.usuario);
         formik.setFieldValue("puesto", seleccionado.puesto);
         formik.setFieldValue("salario", seleccionado.salario);
         formik.setFieldValue("domicilio", seleccionado.domicilio);
@@ -109,6 +112,15 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
                         {...commonTextFieldProps}
                         error={formik.touched.nombre && Boolean(formik.errors.nombre)}
                         helperText={formik.touched.nombre && formik.errors.nombre}
+                    />
+
+                    <TextField
+                        id="usuario"
+                        label="usuario"
+                        value={formik.values.usuario}
+                        {...commonTextFieldProps}
+                        error={formik.touched.usuario && Boolean(formik.errors.usuario)}
+                        helperText={formik.touched.usuario && formik.errors.usuario}
                     />
 
                     <Select

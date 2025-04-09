@@ -20,11 +20,11 @@ function Login() {
     //Configuración de formik (el formulario)
     const formik = useFormik({
         initialValues: {
-            nombre: "",
+            usuario: "",
             password: "",
         },
         validationSchema: Yup.object({
-            nombre: Yup.string().required("Campo requerido"),
+            usuario: Yup.string().required("Campo requerido"),
             password: Yup.string().required("Campo requerido"),
         }),
         /* ============ CÓDIGO OnSubmit SI TODO ESTÁ BIEN ============ */
@@ -78,12 +78,12 @@ function Login() {
 
                         {/* Usuario */}
                         <TextField
-                            id="nombre"
-                            label="nombre"
-                            value={formik.values.nombre}
+                            id="usuario"
+                            label="usuario"
+                            value={formik.values.usuario}
                             {...commonTextFieldProps}
-                            error={formik.touched.nombre && Boolean(formik.errors.nombre)}
-                            helperText={formik.touched.nombre && formik.errors.nombre}
+                            error={formik.touched.usuario && Boolean(formik.errors.usuario)}
+                            helperText={formik.touched.usuario && formik.errors.usuario}
                         />
 
                         {/* password */}

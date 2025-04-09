@@ -126,13 +126,6 @@ export default function Inventario() {
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
-                {/* ============ BOTÓN DETALLES ============ */}
-                <Tooltip title="Imagen del producto">
-                  <IconButton onClick={() => setShowRegistrar(true)}>
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
-
               </Box>
             </Stack>
             {/* ------- BARRA DE ACCIONES FIN ------ */}

@@ -4,6 +4,7 @@ const esquema_usuarios = new mongoose.Schema({
     puesto: { type: String, enum: ['cajero', 'gerente'] },
     password: { type: String },
     nombre: { type: String },
+    usuario: { type: String },
     salario: {
         type: Number,
         get: v => (v / 100).toFixed(2),

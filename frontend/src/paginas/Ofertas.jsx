@@ -126,12 +126,6 @@ export default function Ofertas() {
                                         <DeleteIcon />
                                     </IconButton>
                                 </Tooltip>
-                                {/* ============ BOTÓN DETALLES ============ */}
-                                <Tooltip title="Imagen del producto">
-                                    <IconButton onClick={() => setShowRegistrar(true)}>
-                                        <InfoIcon />
-                                    </IconButton>
-                                </Tooltip>
 
                             </Box>
                         </Stack>
