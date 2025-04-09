@@ -13,8 +13,8 @@ export const get_documentos_por_fecha = async (fecha_inicio, fecha_fin) => {
     try {
         return await Modelo.find({
             fecha: {
-                $gte: fecha_inicio,
-                $lte: fecha_fin
+                $gte: new Date(fecha_inicio),
+                $lte: new Date(fecha_fin)
             }
         });
     } catch (error) {

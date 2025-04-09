@@ -1,21 +1,15 @@
 
 import { MaterialReactTable } from 'material-react-table';
 import { useState } from "react";
-import { Stack, Tooltip, Box, IconButton } from "@mui/material";
-import { Text } from '@chakra-ui/react';
+import { Text, Stack, HStack, Input, Button } from '@chakra-ui/react';
 
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditIcon from "@mui/icons-material/Edit";
-import InfoIcon from "@mui/icons-material/Info";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
-import RegistrarPersonal from './formularios/RegistrarPersonal.jsx';
-import EliminarPersonal from './formularios/EliminarPersonal.jsx';
 
-import { get_ventas } from '../api/api_ventas.js';
+import { get_ventas, get_ventas_por_fecha } from '../api/api_ventas.js';
 import { useEffect } from 'react';
-import ActualizarPersonal from './formularios/ActualizarPersonal.jsx';
 
 function texto() {
   return (
@@ -32,9 +26,24 @@ const columnas_tabla = [
     size: 100,
   },
   {
-    accessorKey: "nombre_cajero",
-    header: "Cajero",
+    accessorKey: "nombre",
+    header: "Nombre",
     size: 150,
+  },
+  {
+    accessorKey: "talla",
+    header: "Talla",
+    size: 50,
+  },
+  {
+    accessorKey: "precio",
+    header: "Precio",
+    size: 100,
+  },
+  {
+    accessorKey: "cantidad",
+    header: "Cantidad",
+    size: 50,
   },
   {
     accessorKey: "tipo",
@@ -46,21 +55,39 @@ const columnas_tabla = [
     header: "Tipo de pago",
     size: 50,
   },
+  // {
+  //   accessorKey: "total",
+  //   header: "Total",
+  //   size: 50,
+  // },
+  {
+    accessorKey: "nombre_cajero",
+    header: "Cajero",
+    size: 150,
+  },
 ];
 
 export default function Historial() {
   const [data, setData] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
-  const [seleccionado, setSeleccionado] = useState({ _id: null });
-  const [showRegistrar, setShowRegistrar] = useState(false);
-  const [showEliminar, setShowEliminar] = useState(false);
-  const [showActualizar, setShowActualizar] = useState(false);
+  const [seleccionado, setSeleccionado] = useState([]);
 
   const consultar = async () => {
     try {
       const res = await get_ventas();
-      setData(res.data);
-      console.log(res.data);
+      const datos_tabla = res.data.flatMap(venta => {
+        // Extract sale data (excluding products array)
+        const { productos, ...datos } = venta;
+
+        // Map each product to include the sale data
+        return venta.productos.map(producto => ({
+          ...producto,
+          ...datos
+        }));
+      });
+
+      setData(datos_tabla);
+      console.log(datos_tabla);
     } catch (error) {
       console.log(error);
     }
@@ -70,9 +97,60 @@ export default function Historial() {
     consultar();
   }, []);
 
+  const formik = useFormik({
+    initialValues: {
+      fecha_inicio: "",
+      fecha_fin: ""
+    },
+    validationSchema: Yup.object({
+      fecha_inicio: Yup.date().required("Campo requerido"),
+      fecha_fin: Yup.date().required("Campo requerido"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        console.log(values);
+        const res = await get_ventas_por_fecha(values);
+        const datos_tabla = res.data.flatMap(venta => {
+          // Extract sale data (excluding products array)
+          const { productos, ...datos } = venta;
+
+          // Map each product to include the sale data
+          return venta.productos.map(producto => ({
+            ...producto,
+            ...datos
+          }));
+        });
+
+        setData(datos_tabla);
+        console.log(datos_tabla);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
   return (
-    <div className="centrado-vertical">
+    <Stack>
       <BarraSuperior Texto={texto} />
+
+      <form onSubmit={formik.handleSubmit}>
+        <HStack padding={4}>
+          <Stack>
+            <Text color="black">Fecha inicial:</Text>
+            <Input id="fecha_inicio" name="fecha_inicio" value={formik.values.fecha_inicio} onChange={formik.handleChange} />
+          </Stack>
+          <Stack>
+            <Text color="black">Fecha final:</Text>
+            <Input id="fecha_fin" name="fecha_fin" value={formik.values.fecha_fin} onChange={formik.handleChange} />
+          </Stack>
+          <Button type="submit" size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
+            <Text>Filtrar por fecha</Text>
+          </Button>
+          <Button onClick={consultar} size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
+            <Text>Recargar tabla</Text>
+          </Button>
+        </HStack>
+      </form>
 
       <MaterialReactTable
         //Definir datos y columnas
@@ -83,12 +161,9 @@ export default function Historial() {
         enableColumnActions={false}
         enableStickyHeader
         enableStickyFooter
-        //Elegir solo un renglón
-        enableRowSelection
-        enableMultiRowSelection={false}
         //Borrar mensaje de selección de renglones
         positionToolbarAlertBanner="none"
-        /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
+        /*SE ACTUALIZA "seleccionado" CUANDO CLICKEO UN CHECKBOX*/
         muiSelectCheckboxProps={({ row }) => ({
           onClick: (event) => {
             setSeleccionado(row.original);
@@ -96,6 +171,6 @@ export default function Historial() {
         })}
       />
 
-    </div>
+    </Stack>
   );
 }

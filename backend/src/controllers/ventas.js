@@ -16,9 +16,6 @@ export const get_documentos = async (req, res, next) => {
 export const get_documentos_por_fecha = async (req, res, next) => {
     try {
         const { fecha_inicio, fecha_fin } = req.body;
-        if(!(fecha_inicio > fecha_fin)) {
-            return res.status(400).json({ message: 'El rango de fechas es incorrecto.' });
-        }
         const docs = await Servicios.get_documentos_por_fecha(fecha_inicio, fecha_fin);
         if (!docs) {
             return res.status(400).json({ message: 'No se encontraron ventas en ese rango de fecha.' });

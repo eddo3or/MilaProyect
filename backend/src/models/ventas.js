@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const esquema_productos = new mongoose.Schema({
+    nombre: { type: String },
     talla: { type: String },
     color: { type: String },
     precio: {
@@ -17,7 +18,12 @@ const esquema_ventas = new mongoose.Schema({
     productos: [esquema_productos],
     tipo: { type: String, enum: ['en línea', 'en tienda'] },
     id_caja: { type: mongoose.Schema.Types.ObjectId },
-    pago: { type: String, enum: ['tarjeta', 'efectivo'] }
+    pago: { type: String, enum: ['tarjeta', 'efectivo'] },
+    total: {
+        type: Number,
+        get: v => (v / 100).toFixed(2),
+        set: v => v * 100
+    },
 }, { toJSON: { getters: true } });
 
 export default mongoose.model('venta', esquema_ventas);

@@ -43,7 +43,7 @@ export default function BarraSuperior({ Texto }) {
 								</Drawer.Title>
 							</Drawer.Header>
 							<Drawer.Body>
-								<Image src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9ocGFiOTJ5aWhleDlpamRtaGEydXc1bXI1bnowcTZ2MzVlZzIzcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/j6lCwtfMS2ZNmfoyrv/giphy.gif" />
+								<Image src="/src/assets/shaq.gif" />
 							</Drawer.Body>
 						</Drawer.Content>
 					</Drawer.Positioner>
