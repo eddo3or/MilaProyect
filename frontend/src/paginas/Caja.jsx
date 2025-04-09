@@ -6,7 +6,7 @@ import BarraSuperior from '../componentes/BarraSuperior.jsx';
 function texto() {
   return (
     <Text textStyle="5xl" color="white">
-      Realizar venta
+      Corte de caja
     </Text>
   );
 }
