@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const esquema_productos = new mongoose.Schema({
+    nombre: { type: String },
     talla: { type: String },
     color: { type: String },
     precio: {
@@ -12,9 +13,9 @@ const esquema_productos = new mongoose.Schema({
 }, { _id: true, strict: false, toJSON: { getters: true } });
 
 const esquema_pedidos = new mongoose.Schema({
+    fecha: { type: Date, default: Date.now },
     cliente: { type: String },
     productos: [esquema_productos],
-    fecha: { type: Date, default: Date.now },
     telefono: { type: String },
     estatus: { type: String, enum: ['entregado', 'pendiente', 'caducado'] }
 }, { toJSON: { getters: true } });

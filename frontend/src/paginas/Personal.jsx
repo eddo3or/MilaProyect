@@ -75,7 +75,7 @@ export default function Personal() {
   }, []);
 
   return (
-    <div className="centrado-vertical">
+    <Stack>
       <BarraSuperior Texto={texto} />
 
       <MaterialReactTable
@@ -138,6 +138,6 @@ export default function Personal() {
       <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
       <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
       <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
-    </div>
+    </Stack>
   );
 }

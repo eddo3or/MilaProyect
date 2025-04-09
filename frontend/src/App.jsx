@@ -13,6 +13,8 @@ import Ofertas from './paginas/Ofertas.jsx';
 import Ventas from './paginas/Ventas.jsx';
 import Logout from './paginas/Logout.jsx';
 import Historial from './paginas/Historial.jsx';
+// import Rventas from './paginas/Rventas.jsx';
+import Solicitudes from './paginas/Solicitudes.jsx';
 
 import './App.css'
 
@@ -30,6 +32,8 @@ function App() {
             <Route path='/ventas' element={<Ventas />} />
             <Route path='/logout' element={<Logout />} />
             <Route path='/historial' element={<Historial />} />
+            {/* <Route path='/rventas' element={<Rventas />} /> */}
+            <Route path='/solicitudes' element={<Solicitudes />} />
           </Routes>
         </BrowserRouter>
       </ContextProvider>

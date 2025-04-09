@@ -80,7 +80,7 @@ export default function Inventario() {
   }, []);
 
   return (
-    <div className="centrado-vertical">
+    <Stack>
       <BarraSuperior Texto={texto} />
 
       <MaterialReactTable
@@ -143,6 +143,6 @@ export default function Inventario() {
       <RegistrarProducto show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
       <EliminarProducto show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
       <ActualizarProducto show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
-    </div>
+    </Stack>
   );
 }

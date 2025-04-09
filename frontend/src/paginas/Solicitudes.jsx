@@ -4,74 +4,72 @@ import { useState, useEffect } from "react";
 import { Stack, Tooltip, Box, IconButton } from "@mui/material";
 import { Text } from '@chakra-ui/react';
 
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import InfoIcon from "@mui/icons-material/Info";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
-import RegistrarOferta from './formularios/RegistrarOferta.jsx';
-import { get_ofertas } from '../api/api_ofertas.js';
-import EliminarOferta from './formularios/EliminarOferta.jsx';
-import ActualizarOferta from './formularios/ActualizarOferta.jsx';
+import { get_pedidos } from '../api/api_pedidos.js';
+import DetallesSolicitud from './formularios/DetallesSolicitud.jsx';
+import ActualizarSolicitud from './formularios/ActualizarSolicitud.jsx';
 
 function texto() {
     return (
         <Text textStyle="5xl" color="white">
-            Ofertas
+            Solicitudes
         </Text>
     );
 }
 
 const columnas_tabla = [
     {
-        accessorKey: "nombre",
-        header: "Nombre de la oferta",
-        size: 100,
+        accessorKey: "fecha",
+        header: "Fecha",
+        size: 50,
     },
     {
-        accessorKey: "descuento",
-        header: "Descuento",
-        size: 40,
+        accessorKey: "cliente",
+        header: "Cliente",
+        size: 150,
     },
     {
-        accessorKey: "inicio",
-        header: "Fecha de inicio",
-        size: 60,
-    },
-    {
-        accessorKey: "fin",
-        header: "Fecha de fin",
+        accessorKey: "telefono",
+        header: "Teléfono",
         size: 60,
     },
     {
         accessorKey: "estatus",
         header: "Estatus",
-        size: 50,
+        size: 60,
     },
     {
-        accessorKey: "descripcion",
-        header: "Descripción",
-        size: 100,
-    }
+        accessorKey: "cantidad",
+        header: "Cantidad productos",
+        size: 60,
+    },
 ];
 
-export default function Ofertas() {
-    const [ofertas, setOfertas] = useState([]);
+export default function Solicitudes() {
+    const [data, setData] = useState([]);
     const [loadingTable, setLoadingTable] = useState(false);
-    const [seleccionado, setSeleccionado] = useState({ _id: null });
-    const [showRegistrar, setShowRegistrar] = useState(false);
-    const [showEliminar, setShowEliminar] = useState(false);
+    const [seleccionado, setSeleccionado] = useState([]);
     const [showActualizar, setShowActualizar] = useState(false);
+    const [showDetalles, setShowDetalles] = useState(false);
 
     const consultar = async () => {
+        setLoadingTable(s => true);
         try {
-            const res = await get_ofertas();
-            setOfertas(res.data);
+            const res = await get_pedidos();
+            const pedidosMapeados = res.data.map(pedido => ({
+                ...pedido,
+                cantidad: pedido.productos.length
+            }));
+
+            setData(pedidosMapeados);
         } catch (error) {
             console.log(error);
         }
+        setLoadingTable(s => false);
     }
 
     useEffect(() => {
@@ -80,13 +78,12 @@ export default function Ofertas() {
 
     return (
         <Stack>
-
             <BarraSuperior Texto={texto} />
 
             <MaterialReactTable
                 //Definir datos y columnas
                 columns={columnas_tabla}
-                data={ofertas}
+                data={data}
                 state={{ isLoading: loadingTable }}
                 initialState={{ density: "compact", showGlobalFilter: true }}
                 enableColumnActions={false}
@@ -108,27 +105,16 @@ export default function Ofertas() {
                         {/* ------- BARRA DE ACCIONES ------ */}
                         <Stack direction="row" sx={{ m: 1 }}>
                             <Box>
-                                {/* ============ BOTÓN AGREGAR ============ */}
-                                <Tooltip title="Registrar oferta">
-                                    <IconButton onClick={() => setShowRegistrar(true)}>
-                                        <AddCircleIcon />
-                                    </IconButton>
-                                </Tooltip>
                                 {/* ============ BOTÓN EDITAR ============ */}
-                                <Tooltip title="Editar">
+                                <Tooltip title="Editar estatus">
                                     <IconButton onClick={() => setShowActualizar(true)}>
                                         <EditIcon />
                                     </IconButton>
                                 </Tooltip>
-                                {/* ============ BOTÓN ELIMINAR ============ */}
-                                <Tooltip title="Eliminar">
-                                    <IconButton onClick={() => setShowEliminar(true)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
+
                                 {/* ============ BOTÓN DETALLES ============ */}
-                                <Tooltip title="Imagen del producto">
-                                    <IconButton onClick={() => setShowRegistrar(true)}>
+                                <Tooltip title="Ver detalles">
+                                    <IconButton onClick={() => setShowDetalles(true)}>
                                         <InfoIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -139,10 +125,8 @@ export default function Ofertas() {
                     </>
                 )}
             />
-
-            <RegistrarOferta show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
-            <EliminarOferta show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
-            <ActualizarOferta show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
+            <ActualizarSolicitud show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
+            <DetallesSolicitud show={showDetalles} setShow={setShowDetalles} seleccionado={seleccionado} />
         </Stack>
     );
 }
