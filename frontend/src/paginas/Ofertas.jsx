@@ -1,8 +1,8 @@
 
 import { MaterialReactTable } from 'material-react-table';
 import { useState, useEffect } from "react";
-import { Stack, Tooltip, Box } from "@mui/material";
-import { IconButton } from "@mui/material";
+import { Stack, Tooltip, Box, IconButton } from "@mui/material";
+import { Text } from '@chakra-ui/react';
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,7 +17,11 @@ import EliminarOferta from './formularios/EliminarOferta.jsx';
 import ActualizarOferta from './formularios/ActualizarOferta.jsx';
 
 function texto() {
-    return (<p>Ofertas</p>);
+    return (
+        <Text textStyle="5xl" color="white">
+            Ofertas
+        </Text>
+    );
 }
 
 const columnas_tabla = [

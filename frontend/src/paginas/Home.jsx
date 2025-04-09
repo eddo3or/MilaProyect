@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Stack, Text, SimpleGrid, GridItem, Button, Image, Group, Center } from '@chakra-ui/react'
+import { Stack, Text, SimpleGrid, GridItem, Button, Image, Center } from '@chakra-ui/react'
 import LogoutIcon from '@mui/icons-material/Logout';
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 function texto() {
-	const navigate = useNavigate();
-
 	return (
 		<Stack color="white">
 			<Text textStyle="5xl">

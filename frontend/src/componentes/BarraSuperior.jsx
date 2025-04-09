@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { Button, Flex, Stack, HStack, Group, Text } from "@chakra-ui/react"
+import { Button, Flex, Stack, HStack, Group, Text, Drawer, Image } from "@chakra-ui/react"
 
 import { useUsuarioContext } from '../ContextProvider';
 
@@ -12,8 +12,9 @@ export default function BarraSuperior({ Texto }) {
 	const { usuario } = useUsuarioContext();
 	const navigate = useNavigate();
 	const location = useLocation();
-
 	var [date, setDate] = useState(new Date());
+	const [open, setOpen] = useState(false);
+
 	useEffect(() => {
 		var timer = setInterval(() => setDate(new Date(), 1000));
 		return function cleanup() {
@@ -25,12 +26,28 @@ export default function BarraSuperior({ Texto }) {
 		<Stack>
 
 			<HStack color="purple" justifyContent="space-between" paddingLeft="6" paddingRight="6" paddingTop="2">
-				<Text textStyle="2xl">
+				<Text textStyle="2xl" onClick={() => setOpen(true)}>
 					{date.toLocaleTimeString()}
 				</Text>
 				<Text textStyle="2xl">
 					{usuario.nombre}
 				</Text>
+				<Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
+					<Drawer.Backdrop />
+					<Drawer.Positioner>
+						<Drawer.Content>
+							<Drawer.CloseTrigger />
+							<Drawer.Header>
+								<Drawer.Title>
+									Easter Egg :O
+								</Drawer.Title>
+							</Drawer.Header>
+							<Drawer.Body>
+								<Image src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExaG9ocGFiOTJ5aWhleDlpamRtaGEydXc1bXI1bnowcTZ2MzVlZzIzcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/j6lCwtfMS2ZNmfoyrv/giphy.gif" />
+							</Drawer.Body>
+						</Drawer.Content>
+					</Drawer.Positioner>
+				</Drawer.Root>
 			</HStack>
 
 			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>

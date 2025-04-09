@@ -29,7 +29,7 @@ function App() {
             <Route path='/ofertas' element={<Ofertas />} />
             <Route path='/ventas' element={<Ventas />} />
             <Route path='/logout' element={<Logout />} />
-            <Route path='/Historial' element={<Historial />} />
+            <Route path='/historial' element={<Historial />} />
           </Routes>
         </BrowserRouter>
       </ContextProvider>

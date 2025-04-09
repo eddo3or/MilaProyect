@@ -1,8 +1,8 @@
 
 import { MaterialReactTable } from 'material-react-table';
 import { useState, useEffect } from "react";
-import { Stack, Tooltip, Box } from "@mui/material";
-import { IconButton } from "@mui/material";
+import { Stack, Tooltip, Box, IconButton } from "@mui/material";
+import { Text } from '@chakra-ui/react';
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,7 +18,11 @@ import ActualizarProducto from './formularios/ActualizarProducto.jsx';
 
 
 function texto() {
-  return (<p>Inventario</p>);
+  return (
+    <Text textStyle="5xl" color="white">
+      Inventario
+    </Text>
+  );
 }
 
 const columnas_tabla = [

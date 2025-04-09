@@ -1,8 +1,8 @@
 
 import { MaterialReactTable } from 'material-react-table';
 import { useState } from "react";
-import { Stack, Tooltip, Box } from "@mui/material";
-import { IconButton } from "@mui/material";
+import { Stack, Tooltip, Box, IconButton } from "@mui/material";
+import { Text } from '@chakra-ui/react';
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,7 +18,11 @@ import { useEffect } from 'react';
 import ActualizarPersonal from './formularios/ActualizarPersonal.jsx';
 
 function texto() {
-  return (<p>Personal</p>);
+  return (
+    <Text textStyle="5xl" color="white">
+      Historial
+    </Text>
+  );
 }
 
 const columnas_tabla = [
@@ -49,7 +53,7 @@ const columnas_tabla = [
   }
 ];
 
-export default function Personal() {
+export default function Historial() {
   const [personal, setPersonal] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
   const [seleccionado, setSeleccionado] = useState({ _id: null });
@@ -134,9 +138,9 @@ export default function Personal() {
           />
         </Box>
         {/* M O D A L E S */}
-        <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar}/>
-        <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado}/>
-        <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado}/>
+        <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
+        <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
+        <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
       </Box>
     </div>
   );

@@ -1,22 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Stack, Text, SimpleGrid, GridItem, Button, Image, Group, Center } from '@chakra-ui/react'
+import { Stack, Text, SimpleGrid, GridItem, Button, Image, Center } from '@chakra-ui/react'
 import LogoutIcon from '@mui/icons-material/Logout';
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 function texto() {
-    const navigate = useNavigate();
-
     return (
-        <Stack color="white">
-            <Text textStyle="5xl">
-                Ventas
-            </Text>
-        </Stack>
+        <Text textStyle="5xl" color="white">
+            Ventas
+        </Text>
     );
 }
 
-export default function Home() {
+export default function Ventas() {
     const navigate = useNavigate();
 
     return (
@@ -32,7 +28,7 @@ export default function Home() {
                             width="45%"
                             src="/src/assets/Compra.png"
                         />
-                        <Button onClick={() => navigate("/Rventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+                        <Button onClick={() => navigate("/rventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
                             <Text textStyle="3xl">
                                 Realizar venta
                             </Text>
@@ -48,7 +44,7 @@ export default function Home() {
                             width="40%"
                             src="/src/assets/Historial.png"
                         />
-                        <Button onClick={() => navigate("/Historial")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+                        <Button onClick={() => navigate("/historial")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
                             <Text textStyle="3xl">
                                 Historial de ventas
                             </Text>
@@ -65,7 +61,7 @@ export default function Home() {
                             width="30%"
                             src="/src/assets/Linea.png"
                         />
-                        <Button onClick={() => navigate("/Solicitudes")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+                        <Button onClick={() => navigate("/solicitudes")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
                             <Text textStyle="3xl">
                                 Solicitudes de venta
                             </Text>
@@ -82,7 +78,7 @@ export default function Home() {
                             src="/src/assets/Caja.png"
                             width="40%"
                         />
-                        <Button onClick={() => navigate("/Caja")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+                        <Button onClick={() => navigate("/caja")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
                             <Text textStyle="3xl">
                                 Corte de caja
                             </Text>
