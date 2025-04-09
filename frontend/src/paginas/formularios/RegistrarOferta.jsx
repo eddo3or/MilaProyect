@@ -1,5 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -147,7 +146,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                     </Box>
 
                     {/* FIC: Boton de Cerrar. */}
-                    <LoadingButton
+                    <Button
                         color="secondary"
                         loadingPosition="start"
                         startIcon={<CloseIcon />}
@@ -160,10 +159,10 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         }}
                     >
                         <span>CERRAR</span>
-                    </LoadingButton>
+                    </Button>
 
                     {/* FIC: Boton de Guardar. */}
-                    <LoadingButton
+                    <Button
                         color="primary"
                         loadingPosition="start"
                         startIcon={<SaveIcon />}
@@ -174,7 +173,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                     >
 
                         <span>Insertar</span>
-                    </LoadingButton>
+                    </Button>
                 </DialogActions>
             </form>
         </Dialog>
