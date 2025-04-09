@@ -13,48 +13,43 @@ import BarraSuperior from '../componentes/BarraSuperior.jsx';
 import RegistrarPersonal from './formularios/RegistrarPersonal.jsx';
 import EliminarPersonal from './formularios/EliminarPersonal.jsx';
 
-import { get_usuarios } from '../api/api_usuarios.js';
+import { get_ventas } from '../api/api_ventas.js';
 import { useEffect } from 'react';
 import ActualizarPersonal from './formularios/ActualizarPersonal.jsx';
 
 function texto() {
   return (
     <Text textStyle="5xl" color="white">
-      Historial
+      Historial de ventas
     </Text>
   );
 }
 
 const columnas_tabla = [
   {
-    accessorKey: "puesto",
-    header: "Puesto",
-    size: 30,
-  },
-  {
-    accessorKey: "nombre",
-    header: "Nombre",
+    accessorKey: "fecha",
+    header: "Fecha",
     size: 100,
   },
   {
-    accessorKey: "salario",
-    header: "Salario",
-    size: 50,
-  },
-  {
-    accessorKey: "domicilio",
-    header: "Domicilio",
+    accessorKey: "nombre_cajero",
+    header: "Cajero",
     size: 150,
   },
   {
-    accessorKey: "telefono",
-    header: "Telefono",
+    accessorKey: "tipo",
+    header: "Tipo de venta",
     size: 50,
-  }
+  },
+  {
+    accessorKey: "pago",
+    header: "Tipo de pago",
+    size: 50,
+  },
 ];
 
 export default function Historial() {
-  const [personal, setPersonal] = useState([]);
+  const [data, setData] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
   const [seleccionado, setSeleccionado] = useState({ _id: null });
   const [showRegistrar, setShowRegistrar] = useState(false);
@@ -63,8 +58,9 @@ export default function Historial() {
 
   const consultar = async () => {
     try {
-      const res = await get_usuarios();
-      setPersonal(res.data);
+      const res = await get_ventas();
+      setData(res.data);
+      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -78,70 +74,28 @@ export default function Historial() {
     <div className="centrado-vertical">
       <BarraSuperior Texto={texto} />
 
-      <Box>
-        <Box>
-          <MaterialReactTable
-            //Definir datos y columnas
-            columns={columnas_tabla}
-            data={personal}
-            state={{ isLoading: loadingTable }}
-            initialState={{ density: "compact", showGlobalFilter: true }}
-            enableColumnActions={false}
-            enableStickyHeader
-            enableStickyFooter
-            //Elegir solo un renglón
-            enableRowSelection
-            enableMultiRowSelection={false}
-            //Borrar mensaje de selección de renglones
-            positionToolbarAlertBanner="none"
-            /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
-            muiSelectCheckboxProps={({ row }) => ({
-              onClick: (event) => {
-                setSeleccionado(row.original);
-              }
-            })}
-            renderTopToolbarCustomActions={({ table }) => (
-              <>
-                {/* ------- BARRA DE ACCIONES ------ */}
-                <Stack direction="row" sx={{ m: 1 }}>
-                  <Box>
-                    {/* ============ BOTÓN AGREGAR ============ */}
-                    <Tooltip title="Registrar personal">
-                      <IconButton onClick={() => setShowRegistrar(true)}>
-                        <AddCircleIcon />
-                      </IconButton>
-                    </Tooltip>
-                    {/* ============ BOTÓN EDITAR ============ */}
-                    <Tooltip title="Actualizar datos de personal seleccionado">
-                      <IconButton onClick={() => setShowActualizar(true)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    {/* ============ BOTÓN ELIMINAR ============ */}
-                    <Tooltip title="Eliminar">
-                      <IconButton onClick={() => setShowEliminar(true)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                    {/* ============ BOTÓN DETALLES ============ */}
-                    <Tooltip title="Detalles">
-                      <IconButton onClick={() => setShowRegistrar(true)}>
-                        <InfoIcon />
-                      </IconButton>
-                    </Tooltip>
+      <MaterialReactTable
+        //Definir datos y columnas
+        columns={columnas_tabla}
+        data={data}
+        state={{ isLoading: loadingTable }}
+        initialState={{ density: "compact", showGlobalFilter: true }}
+        enableColumnActions={false}
+        enableStickyHeader
+        enableStickyFooter
+        //Elegir solo un renglón
+        enableRowSelection
+        enableMultiRowSelection={false}
+        //Borrar mensaje de selección de renglones
+        positionToolbarAlertBanner="none"
+        /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
+        muiSelectCheckboxProps={({ row }) => ({
+          onClick: (event) => {
+            setSeleccionado(row.original);
+          }
+        })}
+      />
 
-                  </Box>
-                </Stack>
-                {/* ------- BARRA DE ACCIONES FIN ------ */}
-              </>
-            )}
-          />
-        </Box>
-        {/* M O D A L E S */}
-        <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
-        <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
-        <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
-      </Box>
     </div>
   );
 }

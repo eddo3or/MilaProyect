@@ -50,7 +50,7 @@ export default function BarraSuperior({ Texto }) {
 				</Drawer.Root>
 			</HStack>
 
-			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>
+			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="4" paddingBottom="4" paddingRight="6">
 				<Texto />
 				{
 					!(location.pathname == "/home") && (
