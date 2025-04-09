@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Box, Spinner } from "@chakra-ui/react"
+import { Box, CircularProgress } from "@mui/material"
 import { useUsuarioContext } from '../ContextProvider';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ function Logout() {
 
     return (
         <Box>
-            <Spinner size="lg" animationDuration="1.2s" />
+            <CircularProgress />
             <h4>Cerrando sesión</h4>
         </Box>
     );

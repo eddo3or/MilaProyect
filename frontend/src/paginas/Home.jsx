@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Stack, Text, SimpleGrid, GridItem, Button, Image, Group, Center } from '@chakra-ui/react'
+import { Stack, Grid, Button, Box, Typography } from '@mui/material'
+
 import LogoutIcon from '@mui/icons-material/Logout';
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
@@ -9,12 +10,12 @@ function texto() {
 
 	return (
 		<Stack color="white">
-			<Text textStyle="5xl">
+			<Typography variant="5h">
 				Bienvenid@
-			</Text>
-			<Text textStyle="2xl">
+			</Typography>
+			<Typography variant="2h">
 				Elija una opción
-			</Text>
+			</Typography>
 		</Stack>
 	);
 }
@@ -26,83 +27,124 @@ export default function Home() {
 		<Stack h="full" bgGradient="to-t" gradientFrom="red.200" gradientTo="blue.200">
 			<BarraSuperior Texto={texto} />
 
-			<SimpleGrid columns={2} gap={"40px"} >
-				<GridItem>
-					<Center>
-						<Image
-							rounded="md"
-							fit="contain"
-							width="30%"
+			<Grid container spacing={2}>
+				<Grid item size={6} >
+					<Box
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+					>
+
+						<Box
+							component="img"
 							src="/src/assets/Inventario.png"
+							alt="Inventario"
+							sx={{
+								width: '30%',
+								borderRadius: '16px', // Adjust for more/less rounding
+								objectFit: 'contain', // Ensures image fits while maintaining aspect ratio
+								display: 'block' // Removes extra space below image
+							}}
 						/>
 						<Button onClick={() => navigate("/inventario")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							<Text textStyle="3xl">
+							<Typography variant="2h">
 								Inventario
-							</Text>
+							</Typography>
 						</Button>
-					</Center>
-				</GridItem>
+					</Box>
+				</Grid>
 
-				<GridItem>
-					<Center>
-						<Image
-							rounded="md"
-							fit="contain"
-							width="30%"
+				<Grid item size={6} >
+					<Box
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Box
+							component="img"
 							src="/src/assets/Persona.png"
+							alt="Persona"
+							sx={{
+								width: '30%',
+								borderRadius: '16px', // Adjust for more/less rounding
+								objectFit: 'contain', // Ensures image fits while maintaining aspect ratio
+								display: 'block' // Removes extra space below image
+							}}
 						/>
 						<Button onClick={() => navigate("/personal")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							<Text textStyle="3xl">
+							<Typography variant="3h">
 								Personal
-							</Text>
+							</Typography>
 
 						</Button>
-					</Center>
-				</GridItem>
+					</Box>
+				</Grid>
 
-				<GridItem>
-					<Center>
-						<Image
-							rounded="md"
-							fit="contain"
-							width="30%"
+				<Grid item size={6} >
+					<Box
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Box
+							component="img"
 							src="/src/assets/Ofertas.png"
+							alt="Ofertas"
+							sx={{
+								width: '30%',
+								borderRadius: '16px', // Adjust for more/less rounding
+								objectFit: 'contain', // Ensures image fits while maintaining aspect ratio
+								display: 'block' // Removes extra space below image
+							}}
 						/>
 						<Button onClick={() => navigate("/ofertas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							<Text textStyle="3xl">
+							<Typography variant="3h">
 								Ofertas
-							</Text>
+							</Typography>
 
 						</Button>
-					</Center>
-				</GridItem>
+					</Box>
+				</Grid>
 
-				<GridItem>
-					<Center>
-						<Image
-							rounded="md"
-							fit="contain"
+				<Grid item size={6} >
+					<Box
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Box
+							component="img"
 							src="/src/assets/Ventas.png"
-							width="30%"
+							alt="Ventas"
+							sx={{
+								width: '30%',
+								borderRadius: '16px', // Adjust for more/less rounding
+								objectFit: 'contain', // Ensures image fits while maintaining aspect ratio
+								display: 'block' // Removes extra space below image
+							}}
 						/>
 						<Button onClick={() => navigate("/ventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							<Text textStyle="3xl">
+							<Typography variant="3xl">
 								Ventas
-							</Text>
+							</Typography>
 						</Button>
-					</Center>
-				</GridItem>
-			</SimpleGrid>
+					</Box>
+				</Grid>
+			</Grid>
 
-			<Center>
+			<Box
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+			>
 				<Button onClick={() => navigate("/logout")} size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
 					<LogoutIcon />
-					<Text textStyle="2xl">
+					<Typography variant="h6">
 						Salir
-					</Text>
+					</Typography>
 
 				</Button>
-			</Center>
+			</Box>
 
 		</Stack>
 	);

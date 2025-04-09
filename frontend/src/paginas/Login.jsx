@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Button } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import LoginIcon from "@mui/icons-material/Login";
 
@@ -116,7 +115,7 @@ function Login() {
                         </Box>
 
                         {/* ============ BOTÓN ENTRAR ============ */}
-                        <LoadingButton
+                        <Button
                             color="primary"
                             loadingPosition="start"
                             startIcon={<LoginIcon />}
@@ -127,7 +126,7 @@ function Login() {
                         >
 
                             <span>Entrar</span>
-                        </LoadingButton>
+                        </Button>
                     </DialogActions>
                 </form>
             </Dialog>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { Button, Flex, Stack, HStack, Box, Text } from "@chakra-ui/react"
+import { Button, Stack, Box, Typography } from "@mui/material"
 
 import { useUsuarioContext } from '../ContextProvider';
 
@@ -24,16 +24,16 @@ export default function BarraSuperior({ Texto }) {
 	return (
 		<Stack>
 
-			<HStack color="purple" justifyContent="space-between" paddingLeft="6" paddingRight="6" paddingTop="2">
-				<Text textStyle="2xl">
+			<Stack direction="row" color="purple" justifyContent="space-between" paddingLeft="6" paddingRight="6" paddingTop="2">
+				<Typography variant="h6">
 					{date.toLocaleTimeString()}
-				</Text>
-				<Text textStyle="2xl">
+				</Typography>
+				<Typography variant="h6">
 					{usuario.nombre}
-				</Text>
-			</HStack>
+				</Typography>
+			</Stack>
 
-			<Flex direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>
+			<Stack direction="row" justifyContent="space-between" background="yellow.400" paddingLeft="6" paddingTop="2" paddingBottom="4" paddingRight={"6"}>
 				<Texto />
 				{
 					!(location.pathname == "/home") && (
@@ -49,7 +49,7 @@ export default function BarraSuperior({ Texto }) {
 						</Box>
 					)
 				}
-			</Flex>
+			</Stack>
 
 		</Stack >
 	);
