@@ -68,7 +68,7 @@ export default function Home() {
 							width="30%"
 							src="/src/assets/Ofertas.png"
 						/>
-						<Button onClick={() => navigate("/ofertas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+						<Button onClick={() => navigate("/Ofertas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
 							<Text textStyle="3xl">
 								Ofertas
 							</Text>
@@ -85,7 +85,7 @@ export default function Home() {
 							src="/src/assets/Ventas.png"
 							width="30%"
 						/>
-						<Button onClick={() => navigate("/ventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+						<Button onClick={() => navigate("/Ventas")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
 							<Text textStyle="3xl">
 								Ventas
 							</Text>

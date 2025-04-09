@@ -12,6 +12,7 @@ import Inventario from './paginas/Inventario.jsx';
 import Ofertas from './paginas/Ofertas.jsx';
 import Ventas from './paginas/Ventas.jsx';
 import Logout from './paginas/Logout.jsx';
+import Historial from './paginas/Historial.jsx';
 
 import './App.css'
 
@@ -28,6 +29,7 @@ function App() {
             <Route path='/ofertas' element={<Ofertas />} />
             <Route path='/ventas' element={<Ventas />} />
             <Route path='/logout' element={<Logout />} />
+            <Route path='/Historial' element={<Historial />} />
           </Routes>
         </BrowserRouter>
       </ContextProvider>
