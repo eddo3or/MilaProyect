@@ -17,6 +17,7 @@ export default function ActualizarProducto({ show, setShow, refresh, seleccionad
 
     const formik = useFormik({
         initialValues: {
+            codigo: seleccionado.codigo,
             nombre: seleccionado.nombre,
             talla: seleccionado.talla,
             precio: seleccionado.precio,
@@ -25,6 +26,7 @@ export default function ActualizarProducto({ show, setShow, refresh, seleccionad
             color: seleccionado.color,
         },
         validationSchema: Yup.object({
+            codigo: Yup.string().required("Campo requerido"),
             nombre: Yup.string().required("Campo requerido"),
             talla: Yup.string().required("Campo requerido"),
             precio: Yup.number().required("Campo requerido"),
@@ -60,6 +62,7 @@ export default function ActualizarProducto({ show, setShow, refresh, seleccionad
     };
 
     useEffect(() => {
+        formik.setFieldValue("codigo", seleccionado.codigo);
         formik.setFieldValue("nombre", seleccionado.nombre);
         formik.setFieldValue("talla", seleccionado.talla);
         formik.setFieldValue("precio", seleccionado.precio);
@@ -99,6 +102,15 @@ export default function ActualizarProducto({ show, setShow, refresh, seleccionad
                     </Typography>
                 </DialogTitle>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column' }} dividers>
+
+                    <TextField
+                        id="codigo"
+                        label="codigo"
+                        value={formik.values.codigo}
+                        {...commonTextFieldProps}
+                        error={formik.touched.codigo && Boolean(formik.errors.codigo)}
+                        helperText={formik.touched.codigo && formik.errors.codigo}
+                    />
 
                     <TextField
                         id="nombre"

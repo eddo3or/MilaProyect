@@ -8,6 +8,7 @@ import pedidos from "./pedidos.js";
 import productos from "./productos.js";
 import usuarios from "./usuarios.js";
 import ventas from "./ventas.js";
+import mila from "./mila.js";
 
 //Se configuran las rutas para las apis
 const routerAPI = (app) => {
@@ -21,6 +22,7 @@ const routerAPI = (app) => {
     router.use('/productos', productos);
     router.use('/usuarios', usuarios);
     router.use('/ventas', ventas);
+    router.use('/mila', mila);
 
     return router;
 };

@@ -1,23 +1,54 @@
 
-import { Text, Image, Button, Dialog, Portal, Center, Stack, Alert } from '@chakra-ui/react';
+import { Text, Button, Stack, HStack, RadioGroup, Box } from '@chakra-ui/react';
+import { Toaster, toaster } from "../componentes/toaster.jsx";
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
-import BarcodeScannerComponent from "react-qr-barcode-scanner";
-import { useState } from 'react';
-import { MaterialReactTable } from 'material-react-table';
+import { useState, useEffect } from 'react';
+import { useMaterialReactTable, MaterialReactTable } from 'material-react-table';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import axios from 'axios';
+import ImagenProducto from './Rventas/ImagenProducto.jsx';
+import Escaner from './Rventas/Escaner.jsx';
+import { get_info_producto } from '../api/api_productos.js';
+import { useSymbologyScanner } from '@use-symbology-scanner/react';
+import { Symbology } from '@use-symbology-scanner/core';
+import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import axios from "../api/axios_config.js";
+
+const customSymbology = new Symbology({
+  name: 'Custom Symbology',
+  allowedCharacters: '[0-9]',
+  minLength: 3,
+});
 
 const columnas_tabla = [
   {
     accessorKey: "codigo",
     header: "Código",
+    size: 50,
+  },
+  {
+    accessorKey: "nombre",
+    header: "Nombre producto",
+    size: 100,
+  },
+  {
+    accessorKey: "color",
+    header: "Color",
+    size: 100,
+  },
+  {
+    accessorKey: "talla",
+    header: "Talla",
+    size: 100,
+  },
+  {
+    accessorKey: "subtotal",
+    header: "Subtotal",
     size: 100,
   },
 ];
-
 
 function texto() {
   return (
@@ -29,156 +60,226 @@ function texto() {
 
 export default function Rventas() {
   const [data, setData] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
+  const [mostrarImagen, setMostrarImagen] = useState(false);
+  const [mostrarEscaner, setMostrarEscaner] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
-  const [seleccionado, setSeleccionado] = useState();
+  const [seleccionado, setSeleccionado] = useState(null);
+  const [codigoManual, setCodigoManual] = useState("");
+  const [pago, setPago] = useState("efectivo");
+  const [ofertas, setOfertas] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [descuento, setDescuento] = useState(0);
+  const [totalFinal, setTotalFinal] = useState(0);
 
-  const onOpen = () => setIsOpen(true);
-  const onClose = () => setIsOpen(false);
-  return (
-    <Stack>
-      <BarraSuperior Texto={texto} />
+  const actualizarTotalFinal = () => {
+    setTotalFinal(total * (1 - (descuento / 100)));
+  }
 
-      <MaterialReactTable
-        //Definir datos y columnas
-        columns={columnas_tabla}
-        data={data}
-        state={{ isLoading: loadingTable }}
-        initialState={{ density: "compact", showGlobalFilter: true }}
-        enableColumnActions={false}
-        enableStickyHeader
-        enableStickyFooter
-        //Elegir solo un renglón
-        enableRowSelection
-        enableMultiRowSelection={false}
-        //Borrar mensaje de selección de renglones
-        positionToolbarAlertBanner="none"
-        /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
-        muiSelectCheckboxProps={({ row }) => ({
-          onClick: (event) => {
-            setSeleccionado(row.original);
-            console.log(seleccionado);
-          }
-        })}
-        renderTopToolbarCustomActions={({ table }) => (
-          <>
-            {/* ------- BARRA DE ACCIONES ------ */}
-            <Stack direction="row">
-              {/* ============ BOTÓN AGREGAR ============ */}
-              <Button onClick={onOpen} variant="outline" colorPalette="blue">
-                <AddCircleIcon />
-                Escanear con cámara
-              </Button>
-              {/* ============ BOTÓN ELIMINAR ============ */}
+  const añadirProductoATabla = async (codigo) => {
+    setLoadingTable(true);
+
+    try {
+      const producto = await get_info_producto(codigo);
+      producto.data.subtotal = producto.data.precio;
+      setTotal(t => t + producto.data.precio);
+      setData([...data, producto.data]);
+      toaster.create({
+        title: "Escaneado correctamente",
+        description: "Se añadió el correctamente el producto",
+        type: "sucess",
+      })
+
+    } catch (error) {
+      toaster.create({
+        title: "ERROR",
+        description: "No se encontró el producto",
+        type: "error",
+      })
+    }
+
+    setLoadingTable(false);
+  }
+
+  const getOfertas = async () => {
+    try {
+      const res = await axios.get("/mila?module=ofertas&type=all");
+      setOfertas(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleEscaner = (symbol, matchedSymbologies) => {
+    añadirProductoATabla(symbol);
+  }
+
+  useSymbologyScanner(handleEscaner, { symbologies: [customSymbology] });
+
+
+  const table = useMaterialReactTable({
+    columns: columnas_tabla,
+    data: data,
+    state: { isLoading: loadingTable },
+    initialState: { density: "compact", showGlobalFilter: true },
+    enableColumnActions: false,
+    enableStickyHeader: true,
+    enableStickyFooter: true,
+    //Elegir solo un renglón
+    enableRowSelection: true,
+    enableMultiRowSelection: false,
+    //Borrar mensaje de selección de renglones
+    positionToolbarAlertBanner: "none",
+    /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
+    muiSelectCheckboxProps: ({ row }) => ({
+      onClick: (event) => {
+        setSeleccionado(row.original);
+      }
+    }),
+    renderTopToolbarCustomActions: ({ table }) =>
+      <Stack direction="row">
+
+        <Stack direction="row">
+          <TextField
+            id="codigo"
+            label="Código"
+            size="small"
+            value={codigoManual}
+            onChange={(event) => setCodigoManual(event.target.value)}
+          />
+          <Button variant="outline" colorPalette="green"
+            onClick={() => {
+              añadirProductoATabla(codigoManual);
+              setCodigoManual("");
+            }}
+          >
+            <AddCircleIcon />
+            Añadir manualmente
+          </Button>
+        </Stack>
+
+        <Button onClick={() => setMostrarEscaner(true)} variant="outline" colorPalette="blue">
+          <AddCircleIcon />
+          Escanear con cámara
+        </Button>
+
+        {
+          seleccionado && (
+            <>
               <Button variant="outline" colorPalette="red"
                 onClick={() => {
-                  setData(data.filter(item => item !== seleccionado))
+                  setLoadingTable(true)
+                  const newData = data.filter(item => item !== seleccionado)
+                  setData(newData);
+                  setTotal(t => t - seleccionado.precio);
                   setSeleccionado();
+                  table.resetRowSelection();
+                  setLoadingTable(false)
                 }}
               >
                 <DeleteIcon />
                 Eliminar producto seleccionado
               </Button>
-              {/* ============ BOTÓN IMAGEN ============ */}
-              <Button variant="outline" colorPalette="gray" onClick={() => setShowInfo(true)}>
+
+              <Button variant="outline" colorPalette="gray" onClick={() => setMostrarImagen(true)}>
                 <InfoIcon />
                 Mostrar imagen del producto
               </Button>
-            </Stack>
-            {/* ------- BARRA DE ACCIONES FIN ------ */}
-          </>
-        )}
-      />
+            </>
+          )
+        }
 
-      <Dialog.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Content>
-            <Dialog.Header justifyContent="center">
-              <Text fontWeight="bold" textStyle="xl">
-                Escanear QR o código de barras
-              </Text>
-            </Dialog.Header>
-            <Dialog.Body>
-              <BarcodeScannerComponent
-                width={500}
-                height={500}
-                onUpdate={async (err, result) => {
-                  if (result) {
-                    setLoadingTable(true);
-                    const res = await axios.get("https://world.openfoodfacts.org/api/v0/product/" + result.text);
-                    const objeto = {
-                      codigo: result.text,
-                      nombre: res.data.product.name,
-                      imagen: res.data.product.image_small_url
-                    };
-                    setData(elementos => [...elementos, objeto]);
-                    console.log(data);
-                    setLoadingTable(false);
-                    onClose();
-                  }
-                }}
-              />
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Cerrar
-              </Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Portal>
-      </Dialog.Root>
+      </Stack>
+  });
+
+  useEffect(() => {
+    if (ofertas.length === 0) {
+      getOfertas();
+    }
+    actualizarTotalFinal();
+  }, [total, descuento]);
+
+  return (
+    <Stack>
+      <BarraSuperior Texto={texto} />
+
+      <MaterialReactTable table={table} />
+
+      <HStack p={4} justifyContent="flex-end">
+        <Text>
+          Total: ${total.toFixed(2)}
+        </Text>
+      </HStack>
+
+      {
+        descuento !== 0 && (
+          <HStack p={4} justifyContent="flex-end">
+            <Text>
+              Total final con descuento: ${totalFinal.toFixed(2)}
+            </Text>
+          </HStack>
+        )
+      }
 
 
+      <Toaster />
 
-      <Dialog.Root open={showInfo} onOpenChange={(e) => setShowInfo(e.open)}>
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Content>
-            <Dialog.Header justifyContent="center">
-              <Text fontWeight="bold" textStyle="xl">
-                Imagen del producto
-              </Text>
-            </Dialog.Header>
-            <Dialog.Body>
-              <Center>
+      <Escaner mostrar={mostrarEscaner} setMostrar={setMostrarEscaner} añadirProductoATabla={añadirProductoATabla} />
+
+      <ImagenProducto seleccionado={seleccionado} mostrar={mostrarImagen} setMostrar={setMostrarImagen} />
+
+      <Box p="4">
+        <Stack gap="8">
+          <RadioGroup.Root value={pago} onValueChange={(e) => setPago(e.value)}>
+            <HStack gap="6">
+
+              <RadioGroup.Item value="efectivo">
+                <RadioGroup.ItemHiddenInput />
+                <RadioGroup.ItemIndicator />
+                <RadioGroup.ItemText>Efectivo</RadioGroup.ItemText>
+              </RadioGroup.Item>
+
+              <RadioGroup.Item value="tarjeta">
+                <RadioGroup.ItemHiddenInput />
+                <RadioGroup.ItemIndicator />
+                <RadioGroup.ItemText>Tarjeta</RadioGroup.ItemText>
+              </RadioGroup.Item>
+
+            </HStack>
+          </RadioGroup.Root>
+
+          <Box>
+            <FormControl>
+              <InputLabel id="oferta-label">Oferta</InputLabel>
+              <Select
+                labelId="oferta-label"
+                id="oferta"
+                label="Oferta"
+                name="oferta"
+                value={descuento}
+                autoWidth
+                onChange={(e) => setDescuento(e.target.value)}
+              >
+                <MenuItem value={0}>
+                  <em>Ninguno</em>
+                </MenuItem>
                 {
-                  seleccionado && (
-                    <>
-                      {
-                        !seleccionado.imagen && (
-                          <Text>
-                            No hay imagen del producto :c
-                          </Text>
-                        )
-                      }
-                      {
-                        seleccionado.imagen && (
-                          <Image height="200px" src={seleccionado.imagen} />
-                        )
-                      }
-                    </>
-                  )
+                  ofertas.map((item) => (
+                    <MenuItem key={item._id} value={item.descuento}>{item.nombre}</MenuItem>
+                  ))
                 }
-
-                {!seleccionado && (
-                  <Alert.Root status="error">
-                    <Alert.Indicator />
-                    <Alert.Title>NO HAS SELECCIONADO UN PRODUCTO</Alert.Title>
-                  </Alert.Root>
+              </Select>
+              {
+                descuento !== 0 && (
+                  <Text>
+                    Se aplicará un {descuento}% de descuento
+                  </Text>
                 )
-                }
-              </Center>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button colorScheme="blue" mr={3} onClick={() => setShowInfo(false)}>
-                Cerrar
-              </Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Portal>
-      </Dialog.Root>
+              }
+
+            </FormControl>
+          </Box>
+        </Stack>
+      </Box>
 
     </Stack>
   );

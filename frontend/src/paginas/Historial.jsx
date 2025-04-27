@@ -87,7 +87,6 @@ export default function Historial() {
       });
 
       setData(datos_tabla);
-      console.log(datos_tabla);
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +107,6 @@ export default function Historial() {
     }),
     onSubmit: async (values) => {
       try {
-        console.log(values);
         const res = await get_ventas_por_fecha(values);
         const datos_tabla = res.data.flatMap(venta => {
           // Extract sale data (excluding products array)
@@ -122,7 +120,6 @@ export default function Historial() {
         });
 
         setData(datos_tabla);
-        console.log(datos_tabla);
       } catch (error) {
         console.log(error);
       }

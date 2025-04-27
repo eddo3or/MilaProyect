@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
 
 const esquema_productos = new mongoose.Schema({
+    codigo: { type: String, unique: true },
     nombre: { type: String },
     talla: { type: String },
     precio: {
         type: Number,
-        get: v => (v / 100).toFixed(2),
+        get: v => (v / 100),
         set: v => v * 100
     },
     unidades: { type: Number },

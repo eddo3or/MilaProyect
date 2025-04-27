@@ -66,6 +66,13 @@ export default function EliminarProducto({ show, setShow, refresh, seleccionado 
             <DialogContent sx={{ display: 'flex', flexDirection: 'column' }} dividers>
 
                 <TextField
+                    id="codigo"
+                    label="codigo"
+                    value={seleccionado.codigo}
+                    {...commonTextFieldProps}
+                />
+
+                <TextField
                     id="nombre"
                     label="nombre"
                     value={seleccionado.nombre}

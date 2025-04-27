@@ -7,7 +7,7 @@ const esquema_usuarios = new mongoose.Schema({
     usuario: { type: String },
     salario: {
         type: Number,
-        get: v => (v / 100).toFixed(2),
+        get: v => (v / 100),
         set: v => v * 100
     },
     curriculum: { type: mongoose.Schema.Types.ObjectId },

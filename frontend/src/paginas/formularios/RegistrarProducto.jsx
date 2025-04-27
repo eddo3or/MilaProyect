@@ -1,6 +1,8 @@
 import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert, Select, MenuItem, Button } from "@mui/material";
+import { FileUpload } from "@chakra-ui/react"
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
+import UploadIcon from '@mui/icons-material/Upload';
 
 import { insertar_producto } from "../../api/api_productos.js";
 
@@ -13,9 +15,11 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
+    const [archivo, setArchivo] = useState();
 
     const formik = useFormik({
         initialValues: {
+            codigo: "",
             nombre: "",
             talla: "UNITALLA",
             precio: "",
@@ -24,6 +28,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             color: "",
         },
         validationSchema: Yup.object({
+            codigo: Yup.number().required("Campo requerido"),
             nombre: Yup.string().required("Campo requerido"),
             talla: Yup.string().required("Campo requerido"),
             precio: Yup.number().required("Campo requerido"),
@@ -38,7 +43,19 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                await insertar_producto(values);
+                let fd = new FormData();
+                fd.append('imagen', archivo);
+                fd.append('name', archivo.name);
+                if (!archivo.type) fd.append("metadata", "otro");
+                else fd.append("metadata", archivo.type);
+                fd.append("codigo", values.codigo);
+                fd.append("nombre", values.nombre);
+                fd.append("talla", values.talla);
+                fd.append("precio", values.precio);
+                fd.append("unidades", values.unidades);
+                fd.append("proveedor", values.proveedor);
+                fd.append("color", values.color);
+                await insertar_producto(fd);
                 setMensajeExitoAlert("Producto creado y guardado correctamente");
                 refresh();
             } catch (e) {
@@ -75,7 +92,15 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                     dividers
                 >
 
-                    {/* FIC: Campos de captura o selección */}
+                    <TextField
+                        id="codigo"
+                        label="codigo"
+                        value={formik.values.codigo}
+                        {...commonTextFieldProps}
+                        error={formik.touched.codigo && Boolean(formik.errors.codigo)}
+                        helperText={formik.touched.codigo && formik.errors.codigo}
+                    />
+
                     <TextField
                         id="nombre"
                         label="nombre"
@@ -133,6 +158,16 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         error={formik.touched.color && Boolean(formik.errors.color)}
                         helperText={formik.touched.color && formik.errors.color}
                     />
+
+                    <FileUpload.Root accept={["image/png"]} onChange={(event) => setArchivo(event.target.files[0])}>
+                        <FileUpload.HiddenInput />
+                        <FileUpload.Trigger asChild>
+                            <Button variant="solid" size="sm">
+                                <UploadIcon /> Imagen
+                            </Button>
+                        </FileUpload.Trigger>
+                        <FileUpload.List />
+                    </FileUpload.Root>
 
                 </DialogContent>
                 <DialogActions

@@ -9,6 +9,15 @@ export const get_documentos = async () => {
     }
 }
 
+export const get_item = async (codigo) => {
+    try {
+        return await Modelo.findOne({ codigo });
+    } catch (error) {
+        console.log(error.message);
+        return false;
+    }
+}
+
 export const insertar_documento = async (documento) => {
     try {
         const doc = new Modelo(documento);

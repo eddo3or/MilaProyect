@@ -21,7 +21,6 @@ export const insertar_documento = async (documento) => {
 
 export const actualizar_documento = async (id, valores) => {
     try {
-        console.log(valores);
         return await Modelo.findOneAndUpdate({ _id: id }, valores, { new: true, });
     } catch (error) {
         console.log(error.message);

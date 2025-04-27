@@ -27,6 +27,11 @@ function texto() {
 
 const columnas_tabla = [
   {
+    accessorKey: "codigo",
+    header: "Código",
+    size: 50,
+  },
+  {
     accessorKey: "nombre",
     header: "Nombre del producto",
     size: 100,
