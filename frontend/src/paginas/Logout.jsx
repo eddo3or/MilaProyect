@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Group, Spinner } from "@chakra-ui/react"
-import { useUsuarioContext } from '../ContextProvider';
 import { useNavigate } from 'react-router-dom';
+import { Group, Spinner } from "@chakra-ui/react"
+
+import { useUsuarioContext } from '../ContextProvider';
 
 function Logout() {
     const { cerrar_sesion_context } = useUsuarioContext();

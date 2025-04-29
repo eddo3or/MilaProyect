@@ -4,6 +4,7 @@ import * as Controller from "../controllers/ofertas.js";
 const router = Router();
 
 router.get('/get_documentos', Controller.get_documentos);
+router.get('/activas', Controller.getActivas);
 
 router.post('/insertar_documento', Controller.insertar_documento);
 

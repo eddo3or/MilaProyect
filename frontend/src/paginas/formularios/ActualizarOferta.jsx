@@ -21,7 +21,6 @@ export default function ActualizarOferta({ show, setShow, refresh, seleccionado 
             descuento: seleccionado.descuento,
             inicio: seleccionado.inicio,
             fin: seleccionado.fin,
-            estatus: seleccionado.estatus,
             descripcion: seleccionado.descripcion,
         },
         validationSchema: Yup.object({
@@ -29,7 +28,6 @@ export default function ActualizarOferta({ show, setShow, refresh, seleccionado 
             descuento: Yup.number().required("Campo requerido"),
             inicio: Yup.date().required("Campo requerido"),
             fin: Yup.date().required("Campo requerido"),
-            estatus: Yup.string().required("Campo requerido"),
             descripcion: Yup.string().required("Campo requerido"),
         }),
         onSubmit: async (values) => {
@@ -64,7 +62,6 @@ export default function ActualizarOferta({ show, setShow, refresh, seleccionado 
         formik.setFieldValue("descuento", seleccionado.descuento);
         formik.setFieldValue("inicio", seleccionado.inicio);
         formik.setFieldValue("fin", seleccionado.fin);
-        formik.setFieldValue("estatus", seleccionado.estatus);
         formik.setFieldValue("descripcion", seleccionado.descripcion);
     }, [seleccionado]);
 
@@ -134,18 +131,6 @@ export default function ActualizarOferta({ show, setShow, refresh, seleccionado 
                         error={formik.touched.fin && Boolean(formik.errors.fin)}
                         helperText={formik.touched.fin && formik.errors.fin}
                     />
-
-                    <Select
-                        id="estatus"
-                        label="estatus"
-                        name="estatus"
-                        value={formik.values.estatus}
-                        {...commonTextFieldProps}
-                        error={formik.touched.estatus && Boolean(formik.errors.estatus)}
-                    >
-                        <MenuItem value={"Activo"}>Activo</MenuItem>
-                        <MenuItem value={"Inactivo"}>Inactivo</MenuItem>
-                    </Select>
 
                     <TextField
                         id="descripcion"
