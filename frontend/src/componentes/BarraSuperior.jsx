@@ -20,7 +20,7 @@ export default function BarraSuperior({ Texto }) {
         return function cleanup() {
             clearInterval(timer);
         }
-    });
+    }, []);
 
     return (
         <Stack>
