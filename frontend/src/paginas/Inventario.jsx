@@ -106,7 +106,6 @@ export default function Inventario() {
                 /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
                 muiSelectCheckboxProps={({ row }) => ({
                     onClick: (event) => {
-                        console.log(row.original);
                         setSeleccionado(row.original);
                     }
                 })}

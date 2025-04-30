@@ -69,7 +69,6 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                 setArchivo(null);
                 refresh();
             } catch (e) {
-                console.log(e);
                 setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo crear el producto");
                 console.log(e.response.data);
