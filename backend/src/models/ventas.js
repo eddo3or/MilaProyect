@@ -25,6 +25,12 @@ const esquema_ventas = new mongoose.Schema({
         get: v => (v / 100),
         set: v => v * 100
     },
+    totalFinal: {
+        type: Number,
+        get: v => (v / 100),
+        set: v => v * 100
+    },
+    descuento: { type: Number, min: [0, 'No puede haber descuentos menores al 0%'], max: 100 },
 }, { toJSON: { getters: true } });
 
 export default mongoose.model('venta', esquema_ventas);

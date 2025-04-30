@@ -1,5 +1,14 @@
 
-import { Text, Button, Stack, HStack, RadioGroup, Box } from '@chakra-ui/react';
+import {
+    Text,
+    Button,
+    Stack,
+    HStack,
+    RadioGroup,
+    Box,
+    Center,
+    ButtonGroup,
+} from '@chakra-ui/react';
 import { Toaster, toaster } from "../componentes/toaster.jsx";
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 import { useState, useEffect } from 'react';
@@ -13,6 +22,7 @@ import { get_info_producto } from '../api/api_productos.js';
 import { useSymbologyScanner } from '@use-symbology-scanner/react';
 import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import axios from "../api/axios_config.js";
+import { useUsuarioContext } from '../ContextProvider.jsx';
 
 const columnas_tabla = [
     {
@@ -62,6 +72,69 @@ export default function Rventas() {
     const [total, setTotal] = useState(0);
     const [descuento, setDescuento] = useState(0);
     const [totalFinal, setTotalFinal] = useState(0);
+    const { usuario } = useUsuarioContext();
+
+    const hacerVenta = async () => {
+        if (data.length === 0) {
+            toaster.create({
+                title: "ERROR!",
+                description: "NO se puede hacer la venta SI NO HAY PRODUCTOS ESCANEADOS",
+                type: "error",
+            })
+            return;
+        }
+
+        try {
+            let body = {};
+            body.productos = data;
+            body.pago = pago;
+            body.tipo = "en tienda";
+            body.total = total;
+            body.totalFinal = totalFinal;
+            body.descuento = descuento;
+            body.id_caja = "67e4f06c9dcadc442adc8a7f";
+            body.nombre_cajero = usuario.nombre;
+
+            const res = await axios.post("/ventas/hacer-venta", body);
+            toaster.create({
+                title: "Éxito",
+                description: res.data?.message || "Venta realizada con éxito",
+                type: "sucess",
+            })
+
+            limpiarTodo();
+        } catch (error) {
+            const et = error.response?.data?.message || "otro";
+            if (et === "Stock insuficiente") {
+                let detalles = "";
+                error.response.data.faltantes.map(t => {
+                    detalles += "Producto: " + t.codigo + ", Requerido: " + t.requerido + " Disponible: " + t.disponible + ",";
+                });
+                toaster.create({
+                    title: "ERROR: Stock insuficiente",
+                    description: detalles,
+                    type: "error",
+                    duration: 7000
+                })
+            } else {
+                toaster.create({
+                    title: "ERROR!",
+                    description: error.response?.data?.message || "Hubo un error al hacer la venta",
+                    type: "error",
+                })
+            }
+        }
+    }
+
+    const limpiarTodo = () => {
+        setData([]);
+        setSeleccionado(null);
+        setCodigoManual("");
+        setPago("efectivo");
+        setTotal(0);
+        setDescuento(0);
+        setTotalFinal(0);
+    }
 
     const actualizarTotalFinal = () => {
         setTotalFinal(total * (1 - (descuento / 100)));
@@ -210,7 +283,7 @@ export default function Rventas() {
             <MaterialReactTable table={table} />
 
             <HStack p={4} justifyContent="flex-end">
-                <Text>
+                <Text fontSize="3xl">
                     Total: ${total.toFixed(2)}
                 </Text>
             </HStack>
@@ -218,7 +291,7 @@ export default function Rventas() {
             {
                 descuento !== 0 && (
                     <HStack p={4} justifyContent="flex-end">
-                        <Text>
+                        <Text fontSize="3xl">
                             Total final con descuento: ${totalFinal.toFixed(2)}
                         </Text>
                     </HStack>
@@ -232,6 +305,7 @@ export default function Rventas() {
 
             <ImagenProducto seleccionado={seleccionado} mostrar={mostrarImagen} setMostrar={setMostrarImagen} />
 
+
             <Box p="4">
                 <Stack gap="8">
                     <RadioGroup.Root value={pago} onValueChange={(e) => setPago(e.value)}>
@@ -240,13 +314,17 @@ export default function Rventas() {
                             <RadioGroup.Item value="efectivo">
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Efectivo</RadioGroup.ItemText>
+                                <RadioGroup.ItemText fontSize="2xl">
+                                    Efectivo
+                                </RadioGroup.ItemText>
                             </RadioGroup.Item>
 
                             <RadioGroup.Item value="tarjeta">
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Tarjeta</RadioGroup.ItemText>
+                                <RadioGroup.ItemText fontSize="2xl">
+                                    Tarjeta
+                                </RadioGroup.ItemText>
                             </RadioGroup.Item>
 
                         </HStack>
@@ -275,7 +353,7 @@ export default function Rventas() {
                             </Select>
                             {
                                 descuento !== 0 && (
-                                    <Text>
+                                    <Text fontSize="xl">
                                         Se aplicará un {descuento}% de descuento
                                     </Text>
                                 )
@@ -285,6 +363,17 @@ export default function Rventas() {
                     </Box>
                 </Stack>
             </Box>
+
+            <Center>
+                <ButtonGroup>
+                    <Button colorPalette="red" size="2xl" onClick={() => limpiarTodo()}>
+                        Cancelar venta
+                    </Button>
+                    <Button colorPalette="green" size="2xl" onClick={() => hacerVenta()}>
+                        Cobrar
+                    </Button>
+                </ButtonGroup>
+            </Center>
 
         </Stack>
     );
