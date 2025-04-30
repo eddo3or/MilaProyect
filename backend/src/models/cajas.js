@@ -12,6 +12,12 @@ const esquema_historial = new mongoose.Schema({
         get: v => (v / 100),
         set: v => v * 100
     },
+    pagos_tarjeta: {
+        type: Number,
+    },
+    pagos_efectivo: {
+        type: Number,
+    }
 }, { _id: true, strict: false, toJSON: { getters: true } });
 
 const esquema_cajas = new mongoose.Schema({

@@ -4,15 +4,20 @@ import SaveIcon from "@mui/icons-material/Save";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
+import { FileUpload } from "@chakra-ui/react";
+import UploadIcon from '@mui/icons-material/Upload';
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { useState, useEffect } from "react";
 import { actualizar_producto } from "../../api/api_productos.js";
+import axios from "../../api/axios_config.js";
 
 export default function ActualizarProducto({ show, setShow, refresh, seleccionado }) {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
+    const [archivo, setArchivo] = useState();
     const [Loading, setLoading] = useState(false);
 
     const formik = useFormik({
@@ -41,10 +46,33 @@ export default function ActualizarProducto({ show, setShow, refresh, seleccionad
             setMensajeExitoAlert(null);
 
             try {
-                await actualizar_producto(seleccionado._id, values);
+                if (!archivo) {
+                    await axios.post("/productos/actualizar-no-imagen/" + seleccionado._id, values);
+                } else {
+                    let fd = new FormData();
+                    fd.append('imagen', archivo);
+                    fd.append('name', archivo.name);
+                    if (!archivo.type) fd.append("metadata", "otro");
+                    else fd.append("metadata", archivo.type);
+                    fd.append("codigo", values.codigo);
+                    fd.append("nombre", values.nombre);
+                    fd.append("talla", values.talla);
+                    fd.append("precio", values.precio);
+                    fd.append("unidades", values.unidades);
+                    fd.append("proveedor", values.proveedor);
+                    fd.append("color", values.color);
+
+                    await axios.post("/productos/actualizar-imagen/" + seleccionado._id, fd, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                }
                 setMensajeExitoAlert("Actualizado correctamente");
                 refresh();
+                setArchivo(null);
             } catch (error) {
+                console.log(error);
                 setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo actualizar");
                 console.log(error.response.data);
@@ -169,6 +197,17 @@ export default function ActualizarProducto({ show, setShow, refresh, seleccionad
                         error={formik.touched.color && Boolean(formik.errors.color)}
                         helperText={formik.touched.color && formik.errors.color}
                     />
+
+                    <FileUpload.Root accept={["image/*"]} onChange={(event) => setArchivo(event.target.files[0])}>
+                        <FileUpload.HiddenInput />
+                        <FileUpload.Trigger asChild>
+                            <Button variant="solid" size="sm">
+                                <UploadIcon /> Imagen
+                            </Button>
+                        </FileUpload.Trigger>
+                        <FileUpload.List />
+                    </FileUpload.Root>
+
 
                 </DialogContent>
                 <DialogActions

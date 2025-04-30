@@ -18,124 +18,124 @@ import { useEffect } from 'react';
 import ActualizarPersonal from './formularios/ActualizarPersonal.jsx';
 
 function texto() {
-  return (
-    <Text textStyle="5xl" color="white">
-      Personal
-    </Text>
-  );
+    return (
+        <Text textStyle="5xl" color="white">
+            Personal
+        </Text>
+    );
 }
 
 const columnas_tabla = [
-  {
-    accessorKey: "puesto",
-    header: "Puesto",
-    size: 30,
-  },
-  {
-    accessorKey: "nombre",
-    header: "Nombre",
-    size: 100,
-  },
-  {
-    accessorKey: "usuario",
-    header: "usuario",
-    size: 100,
-  },
-  {
-    accessorKey: "salario",
-    header: "Salario",
-    size: 50,
-  },
-  {
-    accessorKey: "domicilio",
-    header: "Domicilio",
-    size: 150,
-  },
-  {
-    accessorKey: "telefono",
-    header: "Telefono",
-    size: 50,
-  }
+    {
+        accessorKey: "puesto",
+        header: "Puesto",
+        size: 30,
+    },
+    {
+        accessorKey: "nombre",
+        header: "Nombre",
+        size: 100,
+    },
+    {
+        accessorKey: "usuario",
+        header: "usuario",
+        size: 100,
+    },
+    {
+        accessorKey: "salario",
+        header: "Salario",
+        size: 50,
+    },
+    {
+        accessorKey: "domicilio",
+        header: "Domicilio",
+        size: 150,
+    },
+    {
+        accessorKey: "telefono",
+        header: "Telefono",
+        size: 50,
+    }
 ];
 
 export default function Personal() {
-  const [personal, setPersonal] = useState([]);
-  const [loadingTable, setLoadingTable] = useState(false);
-  const [seleccionado, setSeleccionado] = useState({ _id: null });
-  const [showRegistrar, setShowRegistrar] = useState(false);
-  const [showEliminar, setShowEliminar] = useState(false);
-  const [showActualizar, setShowActualizar] = useState(false);
+    const [personal, setPersonal] = useState([]);
+    const [loadingTable, setLoadingTable] = useState(false);
+    const [seleccionado, setSeleccionado] = useState({ _id: null });
+    const [showRegistrar, setShowRegistrar] = useState(false);
+    const [showEliminar, setShowEliminar] = useState(false);
+    const [showActualizar, setShowActualizar] = useState(false);
 
-  const consultar = async () => {
-    try {
-      const res = await get_usuarios();
-      setPersonal(res.data);
-    } catch (error) {
-      console.log(error);
+    const consultar = async () => {
+        try {
+            const res = await get_usuarios();
+            setPersonal(res.data);
+        } catch (error) {
+            console.log(error);
+        }
     }
-  }
 
-  useEffect(() => {
-    consultar();
-  }, []);
+    useEffect(() => {
+        consultar();
+    }, []);
 
-  return (
-    <Stack>
-      <BarraSuperior Texto={texto} />
+    return (
+        <Stack>
+            <BarraSuperior Texto={texto} />
 
-      <MaterialReactTable
-        //Definir datos y columnas
-        columns={columnas_tabla}
-        data={personal}
-        state={{ isLoading: loadingTable }}
-        initialState={{ density: "compact", showGlobalFilter: true }}
-        enableColumnActions={false}
-        enableStickyHeader
-        enableStickyFooter
-        //Elegir solo un renglón
-        enableRowSelection
-        enableMultiRowSelection={false}
-        //Borrar mensaje de selección de renglones
-        positionToolbarAlertBanner="none"
-        /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
-        muiSelectCheckboxProps={({ row }) => ({
-          onClick: (event) => {
-            setSeleccionado(row.original);
-          }
-        })}
-        renderTopToolbarCustomActions={({ table }) => (
-          <>
-            {/* ------- BARRA DE ACCIONES ------ */}
-            <Stack direction="row" sx={{ m: 1 }}>
-              <Box>
-                {/* ============ BOTÓN AGREGAR ============ */}
-                <Tooltip title="Registrar personal">
-                  <IconButton onClick={() => setShowRegistrar(true)}>
-                    <AddCircleIcon />
-                  </IconButton>
-                </Tooltip>
-                {/* ============ BOTÓN EDITAR ============ */}
-                <Tooltip title="Actualizar datos de personal seleccionado">
-                  <IconButton onClick={() => setShowActualizar(true)}>
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-                {/* ============ BOTÓN ELIMINAR ============ */}
-                <Tooltip title="Eliminar">
-                  <IconButton onClick={() => setShowEliminar(true)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Stack>
-            {/* ------- BARRA DE ACCIONES FIN ------ */}
-          </>
-        )}
-      />
+            <MaterialReactTable
+                //Definir datos y columnas
+                columns={columnas_tabla}
+                data={personal}
+                state={{ isLoading: loadingTable }}
+                initialState={{ density: "compact", showGlobalFilter: true }}
+                enableColumnActions={false}
+                enableStickyHeader
+                enableStickyFooter
+                //Elegir solo un renglón
+                enableRowSelection
+                enableMultiRowSelection={false}
+                //Borrar mensaje de selección de renglones
+                positionToolbarAlertBanner="none"
+                /*SE ACTUALIZA priceSel CUANDO CLICKEO UN CHECKBOX*/
+                muiSelectCheckboxProps={({ row }) => ({
+                    onClick: (event) => {
+                        setSeleccionado(row.original);
+                    }
+                })}
+                renderTopToolbarCustomActions={({ table }) => (
+                    <>
+                        {/* ------- BARRA DE ACCIONES ------ */}
+                        <Stack direction="row" sx={{ m: 1 }}>
+                            <Box>
+                                {/* ============ BOTÓN AGREGAR ============ */}
+                                <Tooltip title="Registrar personal">
+                                    <IconButton onClick={() => setShowRegistrar(true)}>
+                                        <AddCircleIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                {/* ============ BOTÓN EDITAR ============ */}
+                                <Tooltip title="Actualizar datos de personal seleccionado">
+                                    <IconButton onClick={() => setShowActualizar(true)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                {/* ============ BOTÓN ELIMINAR ============ */}
+                                <Tooltip title="Eliminar">
+                                    <IconButton onClick={() => setShowEliminar(true)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        </Stack>
+                        {/* ------- BARRA DE ACCIONES FIN ------ */}
+                    </>
+                )}
+            />
 
-      <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
-      <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
-      <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
-    </Stack>
-  );
+            <RegistrarPersonal show={showRegistrar} setShow={setShowRegistrar} refresh={consultar} />
+            <EliminarPersonal show={showEliminar} setShow={setShowEliminar} refresh={consultar} seleccionado={seleccionado} />
+            <ActualizarPersonal show={showActualizar} setShow={setShowActualizar} refresh={consultar} seleccionado={seleccionado} />
+        </Stack>
+    );
 }

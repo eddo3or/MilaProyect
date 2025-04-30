@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { GridFSBucket } from 'mongodb';
 import multer from "multer";
 import { Readable } from "stream";
+import Productos from '../models/productos.js';
 
 export const get_documentos = async (req, res, next) => {
     try {
@@ -56,7 +57,7 @@ export const get_imagen = async (req, res, next) => {
 }
 
 //POST
-export const insertar_documento = async (req, res, next) => {
+export const insertarImagen = async (req, res, next) => {
     try {
         const upload = multer({ storage: multer.memoryStorage() });
         upload.single('imagen')(req, res, (err) => {
@@ -102,20 +103,108 @@ export const insertar_documento = async (req, res, next) => {
     } catch (error) {
         return res.status(500).json({ message: "Hubo un error insertando el documento" });
     }
-};
+}
+
+export const insertarNoImagen = async (req, res, next) => {
+    try {
+        const doc = await Servicios.insertar_documento(req.body);
+        if (!doc) {
+            return res.status(400).json({ message: 'No se pudo crear el producto' });
+        } else {
+            res.status(201).json(doc);
+        }
+    } catch (error) {
+        return res.status(500).json({ message: "Hubo un error insertando el documento" });
+    }
+}
+
+const eliminarArchivo = async (bucketName, idArchivo) => {
+    try {
+        const fileID = idArchivo;
+        if (!fileID) {
+            return;
+        }
+
+        const bucket = new GridFSBucket(mongoose.connection.db, {
+            bucketName: bucketName
+        });
+
+        bucket.delete(fileID, function (error) {
+            console.log(error);
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 //PUT
+
+export const actualizar_documento_sin_imagen = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const doc = await Servicios.actualizar_documento(id, req.body);
+        if (!doc) {
+            return res.status(400).json({ message: 'No se pudo actualizar el producto' });
+        } else {
+            res.status(201).json(doc);
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error });
+    }
+};
+
 export const actualizar_documento = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const valores = req.body;
-        const doc = await Servicios.actualizar_documento(id, valores);
-        if (!doc) {
-            return res.status(400).json({ message: 'No se pudo actualizar el documento.' });
-        } else {
-            res.status(200).json(doc);
-        }
+        const doc = Productos.findById(id, { imagen: true });
+        eliminarArchivo("imagenes", doc.imagen);
+        const upload = multer({ storage: multer.memoryStorage() });
+        upload.single('imagen')(req, res, (err) => {
+            if (err) return res.status(400).json({ message: "Hubo un error al subir la imagen" });
+            if (!req.body.name) return res.status(400).json({ message: "La solicitud NO TIENE NOMBRE DE ARCHIVO" })
+
+            const readableStream = new Readable();
+            readableStream.push(req.file.buffer);
+            readableStream.push(null);
+
+            let bucket = new GridFSBucket(mongoose.connection.db, {
+                bucketName: "imagenes"
+            });
+
+            let uploadStream = bucket.openUploadStream(req.body.name);
+            let idImg = uploadStream.id;
+            readableStream.pipe(uploadStream);
+
+            uploadStream.on("error", (err) => {
+                console.log(err);
+                return res.status(500).json({ message: "Hubo un error subiendo la imagen", err });
+            });
+
+            uploadStream.on("finish", async () => {
+                const documento = {
+                    codigo: req.body.codigo,
+                    nombre: req.body.nombre,
+                    talla: req.body.talla,
+                    precio: req.body.precio,
+                    unidades: req.body.unidades,
+                    proveedor: req.body.proveedor,
+                    color: req.body.color,
+                    imagen: idImg,
+                };
+
+                const doc = await Servicios.actualizar_documento(id, documento);
+                if (!doc) {
+                    return res.status(400).json({ message: 'No se pudo actualizar el producto' });
+                } else {
+                    res.status(201).json(doc);
+                }
+            });
+        });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error });
     }
 };

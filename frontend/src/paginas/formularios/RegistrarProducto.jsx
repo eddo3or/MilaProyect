@@ -5,6 +5,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import UploadIcon from '@mui/icons-material/Upload';
 
 import { insertar_producto } from "../../api/api_productos.js";
+import axios from "../../api/axios_config.js";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -43,22 +44,32 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
             setMensajeExitoAlert(null);
 
             try {
-                let fd = new FormData();
-                fd.append('imagen', archivo);
-                fd.append('name', archivo.name);
-                if (!archivo.type) fd.append("metadata", "otro");
-                else fd.append("metadata", archivo.type);
-                fd.append("codigo", values.codigo);
-                fd.append("nombre", values.nombre);
-                fd.append("talla", values.talla);
-                fd.append("precio", values.precio);
-                fd.append("unidades", values.unidades);
-                fd.append("proveedor", values.proveedor);
-                fd.append("color", values.color);
-                await insertar_producto(fd);
+                if (!archivo) {
+                    await axios.post("/productos/insertar-no-imagen", values);
+                } else {
+                    let fd = new FormData();
+                    fd.append('imagen', archivo);
+                    fd.append('name', archivo.name);
+                    if (!archivo.type) fd.append("metadata", "otro");
+                    else fd.append("metadata", archivo.type);
+                    fd.append("codigo", values.codigo);
+                    fd.append("nombre", values.nombre);
+                    fd.append("talla", values.talla);
+                    fd.append("precio", values.precio);
+                    fd.append("unidades", values.unidades);
+                    fd.append("proveedor", values.proveedor);
+                    fd.append("color", values.color);
+                    await axios.post("/productos/insertar-imagen", fd, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                }
                 setMensajeExitoAlert("Producto creado y guardado correctamente");
+                setArchivo(null);
                 refresh();
             } catch (e) {
+                console.log(e);
                 setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo crear el producto");
                 console.log(e.response.data);
@@ -159,7 +170,7 @@ export default function RegistrarProducto({ show, setShow, refresh }) {
                         helperText={formik.touched.color && formik.errors.color}
                     />
 
-                    <FileUpload.Root accept={["image/png"]} onChange={(event) => setArchivo(event.target.files[0])}>
+                    <FileUpload.Root accept={["image/*"]} onChange={(event) => setArchivo(event.target.files[0])}>
                         <FileUpload.HiddenInput />
                         <FileUpload.Trigger asChild>
                             <Button variant="solid" size="sm">

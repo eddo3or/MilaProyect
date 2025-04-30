@@ -1,4 +1,6 @@
 import * as Servicios from '../services/cajas.js';
+import Cajas from '../models/cajas.js';
+import mongoose from "mongoose";
 
 export const get_documentos = async (req, res, next) => {
     try {
@@ -25,6 +27,61 @@ export const get_ventas_fecha = async (req, res, next) => {
         }
     } catch (error) {
         return res.status(500).json({ error });
+    }
+};
+
+export const informacionAhora = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const caja = await Cajas.findById(req.params.id).session(session);
+        if (!caja) {
+            return res.status(400).json({ message: "NO se encontró la caja, ¿Estás usando una pc autorizada?" });
+        }
+
+        let data = {};
+        data.dinero_inicial = caja.dinero_inicial;
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const historialHoy = caja.historial.find(item =>
+            item.fecha >= hoy && item.fecha < new Date(hoy.getTime() + 24 * 60 * 60 * 1000)
+        );
+
+        if (historialHoy) {
+            data.ahora = historialHoy;
+        } else {
+            caja.historial.push({
+                fecha: hoy,
+                total_tarjeta: 0,
+                total_efectivo: caja.dinero_inicial,
+                pagos_tarjeta: 0,
+                pagos_efectivo: 0,
+            });
+            data.ahora = {
+                fecha: hoy,
+                total_tarjeta: 0,
+                total_efectivo: caja.dinero_inicial,
+                pagos_tarjeta: 0,
+                pagos_efectivo: 0,
+            };
+        }
+
+        // Guardar los cambios
+        await caja.save();
+
+        await session.commitTransaction();
+
+        res.status(200).json(data);
+
+    } catch (error) {
+        console.log(error);
+        await session.abortTransaction();
+        return res.status(500).json({ error });
+    } finally {
+        session.endSession();
     }
 };
 

@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/get_documentos', Controller.get_documentos);
 router.get('/get_ventas_fecha', Controller.get_ventas_fecha);
+router.get('/informacion-ahora/:id', Controller.informacionAhora);
 
 router.post('/insertar_documento', Controller.insertar_documento);
 router.post('/insertar_subdocumento/:id', Controller.insertar_subdocumento);

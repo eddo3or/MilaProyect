@@ -8,6 +8,9 @@ export default function ImagenProducto({ seleccionado, mostrar, setMostrar }) {
 
     const obtenerImagen = async () => {
         try {
+            if(!seleccionado.imagen) {
+                return;
+            }
             const img = await get_imagen(seleccionado.imagen);
             const objectURL = URL.createObjectURL(img.data);
             setImage(objectURL);

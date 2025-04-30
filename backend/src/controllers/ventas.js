@@ -100,12 +100,15 @@ export const hacerVenta = async (req, res, next) => {
         if (historialHoy) {
             // Sumar al valor existente
             historialHoy[`total_${req.body.pago}`] += req.body.totalFinal;
+            historialHoy[`pago_${req.body.pago}`] += 1;
         } else {
             // Crear nuevo registro con el monto
             caja.historial.push({
                 fecha: hoy,
                 total_tarjeta: req.body.pago === 'tarjeta' ? req.body.totalFinal : 0,
-                total_efectivo: req.body.pago === 'efectivo' ? req.body.totalFinal : 0
+                total_efectivo: req.body.pago === 'efectivo' ? (req.body.totalFinal + caja.dinero_inicial) : caja.dinero_inicial,
+                pagos_tarjeta: req.body.pago === 'tarjeta' ? 1 : 0,
+                pagos_efectivo: req.body.pago === 'efectivo' ? 1 : 0,
             });
         }
 
