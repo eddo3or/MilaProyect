@@ -76,6 +76,12 @@ export default function Historial() {
         try {
             const res = await get_ventas();
             const datos_tabla = res.data.flatMap(venta => {
+                venta.fecha = new Intl.DateTimeFormat("es-MX", {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                    timeZone: "America/Mazatlan"
+                }).format(new Date(venta.fecha));
+
                 // Extract sale data (excluding products array)
                 const { productos, ...datos } = venta;
 

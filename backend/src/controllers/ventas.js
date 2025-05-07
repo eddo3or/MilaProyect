@@ -100,7 +100,7 @@ export const hacerVenta = async (req, res, next) => {
         if (historialHoy) {
             // Sumar al valor existente
             historialHoy[`total_${req.body.pago}`] += req.body.totalFinal;
-            historialHoy[`pago_${req.body.pago}`] += 1;
+            historialHoy[`pagos_${req.body.pago}`] += 1;
         } else {
             // Crear nuevo registro con el monto
             caja.historial.push({
