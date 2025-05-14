@@ -98,6 +98,7 @@ export const getLog = async (req, res) => {
         if (!doc) {
             return res.status(400).json({ message: "No se encontró la caja con dicho ID, ¿Estás usando una PC autorizada?" });
         }
+        doc.log_dinero.sort((a, b) => b.fecha - a.fecha);
 
         return res.status(200).json({ log: doc.log_dinero });
     } catch (error) {
