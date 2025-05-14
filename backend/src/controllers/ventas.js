@@ -17,6 +17,71 @@ export const get_documentos = async (req, res, next) => {
     }
 };
 
+import PDFDocument from 'pdfkit';
+
+export const getTicket = async (req, res) => {
+    try {
+        const sale = await Ventas.findById(req.params.id);
+
+        if (!sale) {
+            return res.status(404).send('Sale not found');
+        }
+
+        const baseHeight = 400; // Minimum height
+        const productHeight = sale.productos.length * 20; // Approx 20pt per product
+        const totalHeight = baseHeight + productHeight;
+
+        // Create PDF
+        const doc = new PDFDocument({
+            size: [300, totalHeight], // Fixed width (300), initial height (400)
+            margin: 20 // Add some margin
+        });
+
+        // Set response headers
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=ticket-${sale._id}.pdf`);
+
+        // Pipe PDF to response
+        doc.pipe(res);
+
+        // Add content to PDF
+        doc.fontSize(18).text('TICKET DE VENTA', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(12).text(`Fecha: ${sale.fecha.toLocaleString()}`);
+        doc.text(`Cajero: ${sale.nombre_cajero}`);
+        doc.text(`Tipo: ${sale.tipo}`);
+        doc.text(`Pago: ${sale.pago}`);
+        doc.moveDown();
+
+        // Products table
+        doc.font('Helvetica-Bold');
+        doc.text('Producto', 50, doc.y);
+        doc.text('Precio', 200, doc.y, { width: 90, align: 'right' });
+        doc.moveDown();
+        doc.font('Helvetica');
+
+        sale.productos.forEach(product => {
+            doc.text(`${product.nombre} (${product.talla}, ${product.color})`, 50, doc.y);
+            doc.text(`$${product.precio.toFixed(2)}`, 200, doc.y, { width: 90, align: 'right' });
+            doc.moveDown();
+        });
+
+        doc.moveDown();
+        doc.font('Helvetica-Bold');
+        doc.text(`Subtotal: $${sale.total.toFixed(2)}`, { align: 'right' });
+        if (sale.descuento) {
+            doc.text(`Descuento: ${sale.descuento}%`, { align: 'right' });
+        }
+        doc.text(`Total: $${sale.totalFinal.toFixed(2)}`, { align: 'right' });
+
+        // Finalize PDF
+        doc.end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error generating ticket');
+    }
+};
+
 export const get_documentos_por_fecha = async (req, res, next) => {
     try {
         const { fecha_inicio, fecha_fin } = req.body;
@@ -116,11 +181,11 @@ export const hacerVenta = async (req, res, next) => {
         // Guardar los cambios
         await caja.save();
 
-        await Servicios.insertar_documento(req.body);
+        const venta = await Servicios.insertar_documento(req.body);
 
         await session.commitTransaction();
 
-        res.status(201).json({ message: "Se ha realizado la venta con éxito" });
+        res.status(201).json({ message: "Se ha realizado la venta con éxito", idVenta: venta._id });
 
     } catch (error) {
         console.log(error);

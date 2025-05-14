@@ -155,7 +155,18 @@ export default function Historial() {
                     </Button>
                     {
                         seleccionado && (
-                            <DialogProductos datos={seleccionado} refresh={consultar} />
+                            <>
+                                <DialogProductos datos={seleccionado} refresh={consultar} />
+                                <Button
+                                    size={"2xl"}
+                                    colorPalette={"green"}
+                                    variant={"ghost"}
+                                    borderColor={"green"}
+                                    onClick={() => window.open(import.meta.env.VITE_URL_API + "/ventas/ticket/" + seleccionado._id, '_blank')}
+                                >
+                                    Descargar ticket
+                                </Button>
+                            </>
                         )
                     }
                 </HStack>
@@ -182,6 +193,6 @@ export default function Historial() {
                 })}
             />
 
-        </Stack>
+        </Stack >
     );
 }

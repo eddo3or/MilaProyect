@@ -102,6 +102,27 @@ export default function RealizarVenta() {
                 type: "sucess",
             })
 
+            /*
+
+            toaster.promise(axios.get("ventas/ticket/" + res.data.idVenta), {
+                success: {
+                    title: "Éxito",
+                    description: "Ticket generado y descargado con éxito"
+                },
+                error: (result) => {
+                    return {
+                        title: "ERROR!",
+                        description: result.response.data.message || "Error fatal obteniendo el ticket. Inténtelo más tarde",
+                    }
+                },
+                loading: {
+                    title: "Generando ticket...",
+                    description: "Por favor espere",
+                }
+            });
+            */
+            window.open(import.meta.env.VITE_URL_API + "/ventas/ticket/" + res.data.idVenta, '_blank');
+
             limpiarTodo();
         } catch (error) {
             const et = error.response?.data?.message || "otro";
