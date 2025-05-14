@@ -10,6 +10,7 @@ export const get_documentos = async (req, res, next) => {
         if (!docs) {
             return res.status(400).json({ message: 'No se encontraron ventas registradas.' });
         } else {
+            docs.sort((a, b) => b.fecha - a.fecha);
             return res.status(200).json(docs);
         }
     } catch (error) {
