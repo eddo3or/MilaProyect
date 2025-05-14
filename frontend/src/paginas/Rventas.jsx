@@ -262,7 +262,7 @@ export default function Rventas() {
         actualizarTotalFinal();
 
         const handleKeyDown = (e) => {
-            if ((e.ctrlKey && (e.key === 'j' || e.key === 'k')) ||
+            if ((e.ctrlKey && (e.key === 'j' || e.key === 'k' || e.key === 'F')) ||
                 e.key === 'F1' || e.key === 'F8') {
                 e.preventDefault();
                 e.stopPropagation();
