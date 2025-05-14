@@ -100,11 +100,9 @@ export default function Home() {
 			</SimpleGrid>
 
 			<Center>
-				<Button onClick={() => navigate("/logout")} size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
+				<Button onClick={() => navigate("/logout")} size="2xl" colorPalette={"purple"}>
 					<LogoutIcon />
-					<Text textStyle="2xl">
-						Salir
-					</Text>
+					Salir
 				</Button>
 			</Center>
 

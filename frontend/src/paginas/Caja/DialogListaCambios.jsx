@@ -3,42 +3,35 @@ import { useEffect, useState } from "react"
 import { toaster } from "@/componentes/toaster";
 
 import axios from "@/api/axios_config";
+import { MaterialReactTable } from "material-react-table";
 
-export default function DialogListaCambios() {
-    const [cambios, setCambios] = useState();
+const columnas_tabla = [
+    {
+        accessorKey: "fecha",
+        header: "Fecha",
+    },
+    /*
+    {
+        accessorKey: "usuario",
+        header: "Usuario",
+    },
+    */
+    {
+        accessorKey: "nombre",
+        header: "Nombre",
+    },
+    {
+        accessorKey: "detalles",
+        header: "Detalles",
+    },
+];
 
-    useEffect(() => {
-        const getDatos = () => {
-            const peticion = async () => {
-                return axios.get("/cajas/log/67e4f06c9dcadc442adc8a7f").then((response) => {
-                    setCambios(response.data.log);
-                });
-            }
-
-            toaster.promise(peticion, {
-                success: {
-                    title: "Éxito",
-                    description: "Se obtuvieron los datos con éxito"
-                },
-                error: (result) => {
-                    return {
-                        title: "ERROR!",
-                        description: result.response?.data?.message || "Hubo un error obteniendo los datos"
-                    }
-                },
-                loading: { title: "Enviando datos...", description: "Por favor espere" }
-            });
-        }
-
-        if (!cambios) {
-            getDatos();
-        }
-    })
+export default function DialogListaCambios({ cambios }) {
 
     if (!cambios) return null;
 
     return (
-        <Dialog.Root scrollBehavior="inside">
+        <Dialog.Root scrollBehavior="inside" size={"cover"}>
             <Dialog.Trigger asChild>
                 <Button colorPalette="blue" size="2xl">
                     Ver historial de cambios
@@ -55,17 +48,17 @@ export default function DialogListaCambios() {
                             <CloseButton size="sm" />
                         </Dialog.CloseTrigger>
                         <Dialog.Body>
-                            <List.Root>
-                                <For
-                                    each={cambios}
-                                >
-                                    {(item, index) => (
-                                        <List.Item key={index}>
-                                            {item}
-                                        </List.Item>
-                                    )}
-                                </For>
-                            </List.Root>
+                            <MaterialReactTable
+                                //Definir datos y columnas
+                                columns={columnas_tabla}
+                                data={cambios}
+                                initialState={{ density: "compact", showGlobalFilter: true }}
+                                enableColumnActions={false}
+                                enableStickyHeader
+                                enableStickyFooter
+                                //Borrar mensaje de selección de renglones
+                                positionToolbarAlertBanner="none"
+                            />
                         </Dialog.Body>
                     </Dialog.Content>
                 </Dialog.Positioner>

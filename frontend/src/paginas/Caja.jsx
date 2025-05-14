@@ -1,5 +1,5 @@
 
-import { Text, Stack, Card, VStack, HStack, Center, Box, SimpleGrid, GridItem, Button, ButtonGroup } from '@chakra-ui/react';
+import { Text, Stack, Card, VStack, HStack, Center, Box, SimpleGrid, GridItem, Button, ButtonGroup, Dialog } from '@chakra-ui/react';
 
 import { useState, useEffect } from "react";
 
@@ -9,6 +9,9 @@ import axios from "../api/axios_config.js";
 import DialogDineroInicial from './Caja/DialogDineroInicial.jsx';
 import DialogListaCambios from './Caja/DialogListaCambios.jsx';
 import { useUsuarioContext } from '@/ContextProvider.jsx';
+import DialogAgregarEfectivo from './Caja/DialogAgregarEfectivo.jsx';
+import DialogRetirarEfectivo from './Caja/DialogRetirarEfectivo.jsx';
+import { toaster } from '@/componentes/toaster.jsx';
 
 function texto() {
     return (
@@ -20,6 +23,7 @@ function texto() {
 
 export default function Caja() {
     const [data, setData] = useState();
+    const [cambios, setCambios] = useState();
 
     const { usuario } = useUsuarioContext();
 
@@ -32,8 +36,44 @@ export default function Caja() {
         }
     }
 
-    useEffect(() => {
+    const getCambios = () => {
+        const peticion = async () => {
+            return axios.get("/cajas/log/67e4f06c9dcadc442adc8a7f").then((response) => {
+                response.data.log = response.data.log.map(item => {
+                    item.fecha = new Intl.DateTimeFormat("es-MX", {
+                        dateStyle: "long",
+                        timeStyle: "short",
+                        timeZone: "America/Mazatlan"
+                    }).format(new Date(item.fecha));
+
+                    return item;
+                })
+                setCambios(response.data.log);
+            });
+        }
+
+        toaster.promise(peticion, {
+            success: {
+                title: "Éxito",
+                description: "Se obtuvieron los datos con éxito"
+            },
+            error: (result) => {
+                return {
+                    title: "ERROR!",
+                    description: result.response?.data?.message || "Hubo un error obteniendo los datos"
+                }
+            },
+            loading: { title: "Enviando datos...", description: "Por favor espere" }
+        });
+    }
+
+    const refresh = () => {
         consultar();
+        getCambios();
+    }
+
+    useEffect(() => {
+        refresh();
     }, []);
 
     if (!data) {
@@ -164,8 +204,10 @@ export default function Caja() {
                 {
                     usuario.puesto === "gerente" && (
                         <ButtonGroup>
-                            <DialogDineroInicial refresh={consultar} />
-                            <DialogListaCambios refresh={consultar} />
+                            <DialogDineroInicial refresh={refresh} />
+                            <DialogListaCambios cambios={cambios} />
+                            <DialogAgregarEfectivo refresh={refresh} />
+                            <DialogRetirarEfectivo refresh={refresh} />
                         </ButtonGroup>
                     )
                 }

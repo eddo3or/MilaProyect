@@ -194,6 +194,9 @@ export const hacerDevolucion = async (req, res, next) => {
 
         if (venta.pago === "efectivo") {
             historialFecha.total_efectivo -= producto.precio * (1 - (venta.descuento / 100));
+            if (historialFecha.total_efectivo < 0) {
+                return res.status(400).json({ message: "No hay dinero suficiente en la caja para hacer la devolución" });
+            }
         } else {
             historialFecha.total_tarjeta -= producto.precio * (1 - (venta.descuento / 100));
         }

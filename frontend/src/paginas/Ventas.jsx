@@ -95,16 +95,6 @@ export default function Ventas() {
                 </GridItem>
             </SimpleGrid>
 
-            <Center>
-                <Button onClick={() => navigate("/logout")} size="2xl" color="purple.600" variant="outline" width="15%" borderColor="purple.600">
-                    <LogoutIcon />
-                    <Text textStyle="2xl">
-                        Salir
-                    </Text>
-
-                </Button>
-            </Center>
-
         </Stack>
     );
 }

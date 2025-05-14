@@ -94,12 +94,12 @@ export const getLog = async (req, res) => {
             return res.status(400).json({ message: "No se proporcionó el ID de la caja" });
         }
 
-        const doc = await Cajas.findById(req.params.id, { log_dinero_inicial: true }).lean();
+        const doc = await Cajas.findById(req.params.id, { log_dinero: true }).lean();
         if (!doc) {
             return res.status(400).json({ message: "No se encontró la caja con dicho ID, ¿Estás usando una PC autorizada?" });
         }
 
-        return res.status(200).json({ log: doc.log_dinero_inicial });
+        return res.status(200).json({ log: doc.log_dinero });
     } catch (error) {
         return res.status(500).json({ message: error.message || "Error obteniendo el historial de cambios" });
     }
@@ -171,17 +171,16 @@ export const modificarDineroInicial = async (req, res, next) => {
         historialHoy.total_efectivo += req.body.dinero;
         caja.dinero_inicial = req.body.dinero;
 
-        caja.log_dinero_inicial.push(req.body.gerente +
-            " modificó el dinero inicial de la caja. De $" +
-            original.toFixed(2) +
-            " a $" +
-            req.body.dinero.toFixed(2) +
-            ". El día " +
-            new Intl.DateTimeFormat("es-MX", {
-                dateStyle: "long",
-                timeStyle: "short",
-                timeZone: "America/Mazatlan"
-            }).format(Date.now())
+        caja.log_dinero.push(
+            {
+                nombre: req.user.nombre,
+                usuario: req.user.usuario,
+                detalles: " modificó el dinero inicial de la caja. De $" +
+                    original.toFixed(2) +
+                    " a $" +
+                    req.body.dinero.toFixed(2) +
+                    "."
+            }
         );
 
         // Guardar los cambios
@@ -200,6 +199,119 @@ export const modificarDineroInicial = async (req, res, next) => {
 };
 
 //PUT
+export const agregarEfectivo = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const caja = await Cajas.findById(req.params.id).session(session);
+        if (!caja) {
+            return res.status(400).json({ message: "NO se encontró la caja, ¿Estás usando una pc autorizada?" });
+        }
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const historialHoy = caja.historial.find(item =>
+            item.fecha >= hoy && item.fecha < new Date(hoy.getTime() + 24 * 60 * 60 * 1000)
+        );
+
+        if (!historialHoy) {
+            return res.status(500).json({ message: "Error fatal, no se encontró la información del dia de hoy, intente de nuevo más tarde" });
+        }
+        
+        const original = historialHoy.total_efectivo;
+
+        const total = historialHoy.total_efectivo + req.body.dinero;
+
+        historialHoy.total_efectivo += req.body.dinero;
+
+        caja.log_dinero.push(
+            {
+                nombre: req.user.nombre,
+                usuario: req.user.usuario,
+                detalles: " modificó el dinero de la caja. Había: $" +
+                    original.toFixed(2) +
+                    " y añadió: $" +
+                    req.body.dinero.toFixed(2) +
+                    " dejando un total de: $" +
+                    total.toFixed(2) +
+                    "."
+            }
+        );
+
+        await caja.save();
+
+        await session.commitTransaction();
+
+        res.status(200).json({ message: "Se ha agregado dinero a la caja correctamente" });
+    } catch (error) {
+        console.log(error);
+        await session.abortTransaction();
+        return res.status(500).json({ message: error.message || "Error fatal al agregar efectivo a la caja, intente más tarde" });
+    } finally {
+        session.endSession();
+    }
+};
+
+export const retirarEfectivo = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const caja = await Cajas.findById(req.params.id).session(session);
+        if (!caja) {
+            return res.status(400).json({ message: "NO se encontró la caja, ¿Estás usando una pc autorizada?" });
+        }
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const historialHoy = caja.historial.find(item =>
+            item.fecha >= hoy && item.fecha < new Date(hoy.getTime() + 24 * 60 * 60 * 1000)
+        );
+
+        if (!historialHoy) {
+            return res.status(500).json({ message: "Error fatal, no se encontró la información del dia de hoy, intente de nuevo más tarde" });
+        }
+
+        const original = historialHoy.total_efectivo;
+
+        const total = historialHoy.total_efectivo - req.body.dinero;
+        if (total < 0) {
+            return res.status(400).json({ message: "No hay suficiente dinero para retirar esa cantidad" });
+        } else {
+            historialHoy.total_efectivo = total;
+        }
+
+        caja.log_dinero.push(
+            {
+                nombre: req.user.nombre,
+                usuario: req.user.usuario,
+                detalles: " modificó el dinero de la caja. Había: $" +
+                    original.toFixed(2) +
+                    " y retiró: $" +
+                    req.body.dinero.toFixed(2) +
+                    " dejando un total de: $" +
+                    total.toFixed(2) +
+                    "."
+            }
+        );
+
+        await caja.save();
+
+        await session.commitTransaction();
+
+        res.status(200).json({ message: "Se ha retirado dinero de la caja correctamente" });
+    } catch (error) {
+        console.log(error);
+        await session.abortTransaction();
+        return res.status(500).json({ message: error.message || "Error fatal al retirar efectivo a la caja, intente más tarde" });
+    } finally {
+        session.endSession();
+    }
+};
+
 export const actualizar_documento = async (req, res, next) => {
     try {
         const { id } = req.params;

@@ -20,7 +20,7 @@ import axios from '@/api/axios_config';
 import { toaster } from '@/componentes/toaster';
 import { useUsuarioContext } from '@/ContextProvider';
 
-export default function DialogDineroInicial({ refresh }) {
+export default function DialogAgregarEfectivo({ refresh }) {
     const { usuario } = useUsuarioContext();
 
     const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export default function DialogDineroInicial({ refresh }) {
     const handleSubmit = () => {
         const peticion = async () => {
             setLoading(true);
-            return axios.post("/cajas/modificar-dinero-inicial/67e4f06c9dcadc442adc8a7f", { dinero, gerente: usuario.nombre }).then(() => {
+            return axios.put("/cajas/agregar-efectivo/67e4f06c9dcadc442adc8a7f", { dinero }).then(() => {
                 dialog.setOpen(false);
                 refresh();
             }).finally(() => {
@@ -42,13 +42,13 @@ export default function DialogDineroInicial({ refresh }) {
         toaster.promise(peticion, {
             success: {
                 title: "Éxito",
-                description: "Dinero inicial modificado"
+                description: "Dinero añadido correctamente"
             },
             error: (result) => {
                 console.log(result)
                 return {
                     title: "ERROR!",
-                    description: result.response?.data?.message || "Hubo un error modificando el dinero inicial"
+                    description: result.response?.data?.message || "Hubo un error añadiendo dinero a la caja"
                 }
             },
             loading: { title: "Enviando datos...", description: "Por favor espere" }
@@ -61,8 +61,8 @@ export default function DialogDineroInicial({ refresh }) {
             value={dialog}
         >
             <Dialog.Trigger asChild>
-                <Button colorPalette="blue" size="2xl">
-                    Modificar dinero inicial en caja
+                <Button colorPalette="green" size="2xl">
+                    Añadir efectivo a la caja
                 </Button>
             </Dialog.Trigger>
             <Portal>

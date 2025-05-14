@@ -13,6 +13,8 @@ router.post('/insertar_documento', Controller.insertar_documento);
 router.post('/insertar_subdocumento/:id', Controller.insertar_subdocumento);
 router.post("/modificar-dinero-inicial/:id", authRequired, Controller.modificarDineroInicial);
 
+router.put('/agregar-efectivo/:id', authRequired, Controller.agregarEfectivo);
+router.put('/retirar-efectivo/:id', authRequired, Controller.retirarEfectivo);
 router.put('/actualizar_documento/:id', Controller.actualizar_documento);
 router.put('/actualizar_subdocumento/:id/:id_subdoc', Controller.actualizar_subdocumento);
 
