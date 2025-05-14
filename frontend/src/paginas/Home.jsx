@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Stack, Text, SimpleGrid, GridItem, Button, Image, Center } from '@chakra-ui/react'
 import LogoutIcon from '@mui/icons-material/Logout';
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
+import { useUsuarioContext } from '@/ContextProvider.jsx';
 
 function texto() {
 	return (
@@ -19,6 +20,8 @@ function texto() {
 
 export default function Home() {
 	const navigate = useNavigate();
+
+	const { usuario } = useUsuarioContext();
 
 	return (
 		<Stack h="full" bgGradient="to-t" gradientFrom="red.200" gradientTo="blue.200">
@@ -41,22 +44,26 @@ export default function Home() {
 					</Center>
 				</GridItem>
 
-				<GridItem>
-					<Center>
-						<Image
-							rounded="md"
-							fit="contain"
-							width="30%"
-							src="/src/assets/Persona.png"
-						/>
-						<Button onClick={() => navigate("/personal")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
-							<Text textStyle="3xl">
-								Personal
-							</Text>
+				{
+					usuario.puesto === "gerente" && (
+						<GridItem>
+							<Center>
+								<Image
+									rounded="md"
+									fit="contain"
+									width="30%"
+									src="/src/assets/Persona.png"
+								/>
+								<Button onClick={() => navigate("/personal")} size="2xl" variant={"solid"} backgroundColor="yellow.400">
+									<Text textStyle="3xl">
+										Personal
+									</Text>
 
-						</Button>
-					</Center>
-				</GridItem>
+								</Button>
+							</Center>
+						</GridItem>
+					)
+				}
 
 				<GridItem>
 					<Center>
@@ -98,7 +105,6 @@ export default function Home() {
 					<Text textStyle="2xl">
 						Salir
 					</Text>
-
 				</Button>
 			</Center>
 

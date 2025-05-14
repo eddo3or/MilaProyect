@@ -16,8 +16,8 @@ import { useMaterialReactTable, MaterialReactTable } from 'material-react-table'
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ImagenProducto from './Rventas/ImagenProducto.jsx';
-import Escaner from './Rventas/Escaner.jsx';
+import ImagenProducto from './RealizarVenta/ImagenProducto.jsx';
+import Escaner from './RealizarVenta/Escaner.jsx';
 import { get_info_producto } from '../api/api_productos.js';
 import { useSymbologyScanner } from '@use-symbology-scanner/react';
 import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
@@ -60,7 +60,7 @@ function texto() {
     );
 }
 
-export default function Rventas() {
+export default function RealizarVenta() {
     const [data, setData] = useState([]);
     const [mostrarImagen, setMostrarImagen] = useState(false);
     const [mostrarEscaner, setMostrarEscaner] = useState(false);

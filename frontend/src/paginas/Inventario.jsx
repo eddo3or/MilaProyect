@@ -15,7 +15,8 @@ import RegistrarProducto from './formularios/RegistrarProducto.jsx';
 import EliminarProducto from './formularios/EliminarProducto.jsx';
 import { get_productos } from '../api/api_productos.js';
 import ActualizarProducto from './formularios/ActualizarProducto.jsx';
-import ImagenProducto from './Rventas/ImagenProducto.jsx';
+import ImagenProducto from './RealizarVenta/ImagenProducto.jsx';
+import { useUsuarioContext } from '@/ContextProvider.jsx';
 
 function texto() {
     return (
@@ -71,6 +72,7 @@ export default function Inventario() {
     const [showEliminar, setShowEliminar] = useState(false);
     const [showActualizar, setShowActualizar] = useState(false);
     const [showImagen, setShowImagen] = useState(false);
+    const { usuario } = useUsuarioContext();
 
     const consultar = async () => {
         try {
@@ -110,37 +112,41 @@ export default function Inventario() {
                     }
                 })}
                 renderTopToolbarCustomActions={({ table }) => (
-                    <>
-                        {/* ------- BARRA DE ACCIONES ------ */}
-                        <Stack direction="row" sx={{ m: 1 }}>
-                            <Box>
-                                {/* ============ BOTÓN AGREGAR ============ */}
-                                <Tooltip title="Registrar producto">
-                                    <IconButton onClick={() => setShowRegistrar(true)}>
-                                        <AddCircleIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                {/* ============ BOTÓN EDITAR ============ */}
-                                <Tooltip title="Actualizar">
-                                    <IconButton onClick={() => setShowActualizar(true)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                {/* ============ BOTÓN ELIMINAR ============ */}
-                                <Tooltip title="Eliminar">
-                                    <IconButton onClick={() => setShowEliminar(true)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Imagen">
-                                    <IconButton onClick={() => setShowImagen(true)}>
-                                        <InfoIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
-                        </Stack>
-                        {/* ------- BARRA DE ACCIONES FIN ------ */}
-                    </>
+                    < Stack direction="row" sx={{ m: 1 }}>
+                        {
+                            usuario.puesto === "gerente" && (
+                                <>
+                                    {/* ------- BARRA DE ACCIONES ------ */}
+                                    {/* ============ BOTÓN AGREGAR ============ */}
+                                    <Tooltip title="Registrar producto">
+                                        <IconButton onClick={() => setShowRegistrar(true)}>
+                                            <AddCircleIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* ============ BOTÓN EDITAR ============ */}
+                                    <Tooltip title="Actualizar">
+                                        <IconButton onClick={() => setShowActualizar(true)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* ============ BOTÓN ELIMINAR ============ */}
+                                    <Tooltip title="Eliminar">
+                                        <IconButton onClick={() => setShowEliminar(true)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    {/* ------- BARRA DE ACCIONES FIN ------ */}
+                                </>
+                            )
+                        }
+
+                        <Tooltip title="Imagen">
+                            <IconButton onClick={() => setShowImagen(true)}>
+                                <InfoIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
                 )}
             />
 

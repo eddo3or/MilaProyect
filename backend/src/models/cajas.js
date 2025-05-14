@@ -2,6 +2,12 @@ import mongoose from 'mongoose'
 
 const esquema_historial = new mongoose.Schema({
     fecha: { type: Date, default: Date.now },
+    dinero_inicial: {
+        type: Number,
+        get: v => (v / 100),
+        set: v => v * 100,
+        default: 80000,
+    },
     total_tarjeta: {
         type: Number,
         get: v => (v / 100),
@@ -25,9 +31,11 @@ const esquema_cajas = new mongoose.Schema({
     dinero_inicial: {
         type: Number,
         get: v => (v / 100),
-        set: v => v * 100
+        set: v => v * 100,
+        default: 80000,
     },
-    historial: [esquema_historial]
+    historial: [esquema_historial],
+    log_dinero_inicial: [{ type: String, }],
 }, { toJSON: { getters: true } });
 
 export default mongoose.model('caja', esquema_cajas);

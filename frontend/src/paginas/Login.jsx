@@ -4,7 +4,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import { useFormik } from "formik"; //Para crear el formulario
 import * as Yup from 'yup'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import { useUsuarioContext } from "../ContextProvider";
@@ -15,7 +15,14 @@ function Login() {
     const [Loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const { iniciar_sesion_context } = useUsuarioContext();
+    const { iniciar_sesion_context, isAuthenticated } = useUsuarioContext();
+
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/home");
+        }
+    }, [isAuthenticated]);
 
     //Configuración de formik (el formulario)
     const formik = useFormik({
@@ -36,7 +43,6 @@ function Login() {
 
             try {
                 await iniciar_sesion_context(valoresFormulario);
-                navigate('/home');
                 setMensajeExitoAlert("Sesión iniciada correctamente");
             } catch (error) {
                 setMensajeExitoAlert(null);

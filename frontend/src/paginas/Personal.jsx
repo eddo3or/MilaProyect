@@ -42,11 +42,6 @@ const columnas_tabla = [
         size: 100,
     },
     {
-        accessorKey: "salario",
-        header: "Salario",
-        size: 50,
-    },
-    {
         accessorKey: "domicilio",
         header: "Domicilio",
         size: 150,

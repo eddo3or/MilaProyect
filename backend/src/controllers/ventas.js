@@ -1,6 +1,7 @@
 import * as Servicios from '../services/ventas.js';
 import Cajas from '../models/cajas.js';
 import Productos from '../models/productos.js';
+import Ventas from '../models/ventas.js';
 import mongoose from 'mongoose';
 
 export const get_documentos = async (req, res, next) => {
@@ -125,6 +126,103 @@ export const hacerVenta = async (req, res, next) => {
         console.log(error);
         await session.abortTransaction();
         return res.status(500).json({ error });
+    } finally {
+        session.endSession();
+    }
+
+};
+
+
+export const hacerDevolucion = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        if (!req.params.idVenta) {
+            return res.status(400).json({ message: "Se requiere el id de la venta" });
+        }
+
+        if (!req.params.idProducto) {
+            return res.status(400).json({ message: "Se requiere el id del producto" });
+        }
+
+        const venta = await Ventas.findById(req.params.idVenta);
+        if (!venta) {
+            return res.status(400).json({ message: "No se encontró la venta con dicho id: " + req.params.idVenta });
+        }
+
+        const caja = await Cajas.findById(venta.id_caja);
+        if (!caja) {
+            return res.status(400).json({ message: "No se encontró la caja con dicho id: " + venta.id_caja });
+        }
+
+        // venta.productos
+        const producto = venta.productos.find(item => (item.codigo === req.params.idProducto && item.estatus !== "devuelto"));
+        if (!producto) {
+            return res.status(400).json({
+                message: "No se encontró un producto con el código: " +
+                    req.params.idProducto +
+                    " en la venta: " +
+                    req.params.idVenta +
+                    " que no haya sido devuelto"
+            });
+        }
+
+        const EndDate = new Date(Date.now());
+
+        var nDays = (Date.UTC(EndDate.getFullYear(), EndDate.getMonth(), EndDate.getDate()) -
+            Date.UTC(venta.fecha.getFullYear(), venta.fecha.getMonth(), venta.fecha.getDate())) / 86400000;
+
+        if (nDays > 30) {
+            return res.status(400).json({ message: "Ya han pasado más de 30 días y no es posible realizar la devolución" });
+        }
+
+
+        producto.estatus = "devuelto";
+
+        const fecha = venta.fecha;
+        fecha.setHours(0, 0, 0, 0);
+
+        //Se intenta obtener el historial de dicho día
+        const historialFecha = caja.historial.find(item =>
+            item.fecha >= fecha && item.fecha < new Date(fecha.getTime() + 24 * 60 * 60 * 1000)
+        );
+
+        if (!historialFecha) {
+            return res.status(500).json({ message: "Error fatal, no se encontró el historial de ventas de dicha fecha." });
+        }
+
+        if (venta.pago === "efectivo") {
+            historialFecha.total_efectivo -= producto.precio * (1 - (venta.descuento / 100));
+        } else {
+            historialFecha.total_tarjeta -= producto.precio * (1 - (venta.descuento / 100));
+        }
+
+        if (req.body.devolver) {
+            await Productos.findOneAndUpdate(
+                {
+                    codigo: req.params.idProducto,
+                },
+                {
+                    $inc: {
+                        unidades: 1
+                    }
+                }
+            );
+        }
+
+        await venta.save();
+
+        await caja.save();
+
+        await session.commitTransaction();
+
+        res.status(201).json({ message: "Se ha realizado la devolución con éxito" });
+
+    } catch (error) {
+        console.log(error);
+        await session.abortTransaction();
+        return res.status(500).json({ message: error.message || "Error fatal al hacer la devolución" });
     } finally {
         session.endSession();
     }

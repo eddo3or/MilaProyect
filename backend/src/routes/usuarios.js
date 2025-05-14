@@ -7,6 +7,7 @@ router.get('/get_documentos', Controller.get_documentos);
 
 router.post('/insertar_documento', Controller.insertar_documento);
 router.post('/iniciar_sesion', Controller.iniciar_sesion);
+router.post('/verify', Controller.verificarUsuario);
 router.post('/registrar_usuario', Controller.registrar_usuario);
 
 router.put('/actualizar_documento/:id', Controller.actualizar_documento);

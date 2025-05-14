@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 import { iniciar_sesion, cerrar_sesion } from "./api/api_usuarios";
+import axios from "@/api/axios_config";
 
 //Se crea el contexto
 const UsuarioContext = createContext();
@@ -20,11 +22,22 @@ export const useUsuarioContext = () => {
 export function ContextProvider({ children }) {
     const [usuario, setUsuario] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const iniciar_sesion_context = async (body) => {
-        const res = await iniciar_sesion(body);
-        setUsuario(res.data);
-        setIsAuthenticated(true);
+        return new Promise(async (resolve, reject) => {
+            setLoading(t => true);
+            try {
+                const res = await iniciar_sesion(body);
+                setUsuario(res.data);
+                setIsAuthenticated(true);
+                return resolve("Sesión iniciada correctamente");
+            } catch (error) {
+                return reject(error.response?.data?.message || "Error al iniciar sesión");
+            } finally {
+                setLoading(t => false);
+            }
+        })
     }
 
     const cerrar_sesion_context = async () => {
@@ -38,10 +51,39 @@ export function ContextProvider({ children }) {
         }
     }
 
+    useEffect(() => {
+        async function checkLogin() {
+            setLoading(t => true);
+            const cookies = Cookies.get();
+            if (cookies.token) {
+                try {
+                    const res = await axios.post("/usuarios/verify", cookies.token);
+                    if (res.data) {
+                        setIsAuthenticated(true);
+                        setUsuario(res.data.usuario);
+                    } else {
+                        setIsAuthenticated(false);
+                        setUsuario([]);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    setIsAuthenticated(false)
+                    setUsuario([]);
+                    console.log(error.response?.data?.message || error)
+                } finally {
+                    setLoading(t => false);
+                }
+            }
+        }
+
+        checkLogin();
+    }, []);
+
     return (
         <UsuarioContext.Provider value={{
             usuario,
             isAuthenticated,
+            loading,
             iniciar_sesion_context,
             cerrar_sesion_context
         }}>

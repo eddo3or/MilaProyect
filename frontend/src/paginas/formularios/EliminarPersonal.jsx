@@ -93,13 +93,6 @@ export default function EliminarPersonal({ show, setShow, refresh, seleccionado 
                 </Select>
 
                 <TextField
-                    id="salario"
-                    label="salario"
-                    value={seleccionado.salario}
-                    {...commonTextFieldProps}
-                />
-
-                <TextField
                     id="domicilio"
                     label="domicilio"
                     value={seleccionado.domicilio}

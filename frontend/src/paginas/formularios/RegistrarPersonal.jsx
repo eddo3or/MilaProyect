@@ -21,7 +21,6 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             usuario: "",
             password: "",
             puesto: "gerente",
-            salario: "",
             domicilio: "",
             telefono: "",
         },
@@ -30,7 +29,6 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
             usuario: Yup.string().required("Campo requerido"),
             password: Yup.string().required("Campo requerido"),
             puesto: Yup.string().required("Campo requerido"),
-            salario: Yup.string().required("Campo requerido"),
             domicilio: Yup.string().required("Campo requerido"),
             telefono: Yup.string().required("Campo requerido"),
         }),
@@ -119,14 +117,6 @@ export default function RegistrarPersonal({ show, setShow, refresh }) {
                         <MenuItem value={"cajero"}>Cajero</MenuItem>
                     </Select>
 
-                    <TextField
-                        id="salario"
-                        label="salario"
-                        value={formik.values.salario}
-                        {...commonTextFieldProps}
-                        error={formik.touched.salario && Boolean(formik.errors.salario)}
-                        helperText={formik.touched.salario && formik.errors.salario}
-                    />
                     <TextField
                         id="domicilio"
                         label="domicilio"

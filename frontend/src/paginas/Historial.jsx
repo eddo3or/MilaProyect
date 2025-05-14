@@ -10,6 +10,7 @@ import BarraSuperior from '../componentes/BarraSuperior.jsx';
 
 import { get_ventas, get_ventas_por_fecha } from '../api/api_ventas.js';
 import { useEffect } from 'react';
+import DialogProductos from './Historial/DialogProductos.jsx';
 
 function texto() {
     return (
@@ -21,56 +22,47 @@ function texto() {
 
 const columnas_tabla = [
     {
+        accessorKey: "_id",
+        header: "ID de la venta",
+    },
+    {
         accessorKey: "fecha",
         header: "Fecha",
-        size: 100,
     },
     {
-        accessorKey: "nombre",
-        header: "Nombre",
-        size: 150,
+        accessorKey: "nombre_cajero",
+        header: "Cajero",
     },
     {
-        accessorKey: "talla",
-        header: "Talla",
-        size: 50,
-    },
-    {
-        accessorKey: "precio",
-        header: "Precio",
-        size: 100,
-    },
-    {
-        accessorKey: "cantidad",
-        header: "Cantidad",
-        size: 50,
+        accessorKey: "cantidad_productos",
+        header: "Productos",
     },
     {
         accessorKey: "tipo",
         header: "Tipo de venta",
-        size: 50,
     },
     {
         accessorKey: "pago",
         header: "Tipo de pago",
-        size: 50,
     },
-    // {
-    //   accessorKey: "total",
-    //   header: "Total",
-    //   size: 50,
-    // },
     {
-        accessorKey: "nombre_cajero",
-        header: "Cajero",
-        size: 150,
+        accessorKey: "total",
+        header: "Subtotal",
+    },
+    {
+        accessorKey: "totalFinal",
+        header: "Total (final)",
+    },
+    {
+        accessorKey: "descuento",
+        header: "Descuento",
     },
 ];
 
 export default function Historial() {
     const [data, setData] = useState([]);
     const [loadingTable, setLoadingTable] = useState(false);
-    const [seleccionado, setSeleccionado] = useState([]);
+    const [seleccionado, setSeleccionado] = useState();
 
     const consultar = async () => {
         try {
@@ -82,14 +74,18 @@ export default function Historial() {
                     timeZone: "America/Mazatlan"
                 }).format(new Date(venta.fecha));
 
-                // Extract sale data (excluding products array)
-                const { productos, ...datos } = venta;
+                venta.total = '$' + venta.total.toFixed(2);
+                venta.totalFinal = '$' + venta.totalFinal.toFixed(2);
+                venta.descuento = venta.descuento + '%';
 
-                // Map each product to include the sale data
-                return venta.productos.map(producto => ({
-                    ...producto,
-                    ...datos
-                }));
+                venta.cantidad_productos = venta.productos.length;
+
+                venta.productos = venta.productos.map(p => {
+                    p.precio = '$' + p.precio.toFixed(2);
+                    return p;
+                })
+
+                return venta;
             });
 
             setData(datos_tabla);
@@ -115,14 +111,19 @@ export default function Historial() {
             try {
                 const res = await get_ventas_por_fecha(values);
                 const datos_tabla = res.data.flatMap(venta => {
-                    // Extract sale data (excluding products array)
-                    const { productos, ...datos } = venta;
+                    venta.fecha = new Intl.DateTimeFormat("es-MX", {
+                        dateStyle: "long",
+                        timeStyle: "short",
+                        timeZone: "America/Mazatlan"
+                    }).format(new Date(venta.fecha));
 
-                    // Map each product to include the sale data
-                    return venta.productos.map(producto => ({
-                        ...producto,
-                        ...datos
-                    }));
+                    venta.total = '$' + venta.total.toFixed(2);
+                    venta.totalFinal = '$' + venta.totalFinal.toFixed(2);
+                    venta.descuento = venta.descuento + '%';
+
+                    venta.cantidad_productos = venta.productos.length;
+
+                    return venta;
                 });
 
                 setData(datos_tabla);
@@ -152,6 +153,11 @@ export default function Historial() {
                     <Button onClick={consultar} size="2xl" color="purple.600" variant="ghost" borderColor="purple.600">
                         <Text>Recargar tabla</Text>
                     </Button>
+                    {
+                        seleccionado && (
+                            <DialogProductos datos={seleccionado} refresh={consultar} />
+                        )
+                    }
                 </HStack>
             </form>
 
@@ -164,6 +170,8 @@ export default function Historial() {
                 enableColumnActions={false}
                 enableStickyHeader
                 enableStickyFooter
+                enableRowSelection
+                enableMultiRowSelection={false}
                 //Borrar mensaje de selección de renglones
                 positionToolbarAlertBanner="none"
                 /*SE ACTUALIZA "seleccionado" CUANDO CLICKEO UN CHECKBOX*/

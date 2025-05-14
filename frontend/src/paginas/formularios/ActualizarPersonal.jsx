@@ -21,7 +21,6 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
             nombre: seleccionado.nombre,
             usuario: seleccionado.usuario,
             puesto: seleccionado.puesto,
-            salario: seleccionado.salario,
             domicilio: seleccionado.domicilio,
             telefono: seleccionado.telefono,
         },
@@ -29,7 +28,6 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
             nombre: Yup.string().required("Campo requerido"),
             usuario: Yup.string().required("Campo requerido"),
             puesto: Yup.string().required("Campo requerido"),
-            salario: Yup.string().required("Campo requerido"),
             domicilio: Yup.string().required("Campo requerido"),
             telefono: Yup.string().required("Campo requerido"),
         }),
@@ -64,7 +62,6 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
         formik.setFieldValue("nombre", seleccionado.nombre);
         formik.setFieldValue("usuario", seleccionado.usuario);
         formik.setFieldValue("puesto", seleccionado.puesto);
-        formik.setFieldValue("salario", seleccionado.salario);
         formik.setFieldValue("domicilio", seleccionado.domicilio);
         formik.setFieldValue("telefono", seleccionado.telefono);
     }, [seleccionado]);
@@ -135,14 +132,6 @@ export default function ActualizarPersonal({ show, setShow, refresh, seleccionad
                         <MenuItem value={"cajero"}>Cajero</MenuItem>
                     </Select>
 
-                    <TextField
-                        id="salario"
-                        label="salario"
-                        value={formik.values.salario}
-                        {...commonTextFieldProps}
-                        error={formik.touched.salario && Boolean(formik.errors.salario)}
-                        helperText={formik.touched.salario && formik.errors.salario}
-                    />
                     <TextField
                         id="domicilio"
                         label="domicilio"

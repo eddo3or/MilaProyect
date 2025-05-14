@@ -15,6 +15,7 @@ import RegistrarOferta from './formularios/RegistrarOferta.jsx';
 import { get_ofertas } from '../api/api_ofertas.js';
 import EliminarOferta from './formularios/EliminarOferta.jsx';
 import ActualizarOferta from './formularios/ActualizarOferta.jsx';
+import { useUsuarioContext } from '@/ContextProvider.jsx';
 
 function texto() {
     return (
@@ -64,6 +65,7 @@ export default function Ofertas() {
     const [showRegistrar, setShowRegistrar] = useState(false);
     const [showEliminar, setShowEliminar] = useState(false);
     const [showActualizar, setShowActualizar] = useState(false);
+    const { usuario } = useUsuarioContext();
 
     const consultar = async () => {
         try {
@@ -104,33 +106,35 @@ export default function Ofertas() {
                     }
                 })}
                 renderTopToolbarCustomActions={({ table }) => (
-                    <>
-                        {/* ------- BARRA DE ACCIONES ------ */}
-                        <Stack direction="row" sx={{ m: 1 }}>
-                            <Box>
-                                {/* ============ BOTÓN AGREGAR ============ */}
-                                <Tooltip title="Registrar oferta">
-                                    <IconButton onClick={() => setShowRegistrar(true)}>
-                                        <AddCircleIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                {/* ============ BOTÓN EDITAR ============ */}
-                                <Tooltip title="Editar">
-                                    <IconButton onClick={() => setShowActualizar(true)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                {/* ============ BOTÓN ELIMINAR ============ */}
-                                <Tooltip title="Eliminar">
-                                    <IconButton onClick={() => setShowEliminar(true)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
+                    usuario.puesto === "gerente" && (
+                        <>
+                            {/* ------- BARRA DE ACCIONES ------ */}
+                            <Stack direction="row" sx={{ m: 1 }}>
+                                <Box>
+                                    {/* ============ BOTÓN AGREGAR ============ */}
+                                    <Tooltip title="Registrar oferta">
+                                        <IconButton onClick={() => setShowRegistrar(true)}>
+                                            <AddCircleIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* ============ BOTÓN EDITAR ============ */}
+                                    <Tooltip title="Editar">
+                                        <IconButton onClick={() => setShowActualizar(true)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* ============ BOTÓN ELIMINAR ============ */}
+                                    <Tooltip title="Eliminar">
+                                        <IconButton onClick={() => setShowEliminar(true)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
 
-                            </Box>
-                        </Stack>
-                        {/* ------- BARRA DE ACCIONES FIN ------ */}
-                    </>
+                                </Box>
+                            </Stack>
+                            {/* ------- BARRA DE ACCIONES FIN ------ */}
+                        </>
+                    )
                 )}
             />
 

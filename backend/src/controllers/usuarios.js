@@ -1,7 +1,7 @@
 import * as Servicios from '../services/usuarios.js';
 import usuarios from '../models/usuarios.js';
 import bcrypt from "bcryptjs"; //modulo para encriptar la contraseña
-import { createAccessToken } from "./jwt.js"
+import { createAccessToken, createToken, validateToken } from "../libs/jwt.js";
 
 export const get_documentos = async (req, res, next) => {
     try {
@@ -31,12 +31,28 @@ export const iniciar_sesion = async (req, res, next) => {
           para no estar pidiendo autenticarse a
           un usuario ya autenticado
         */
-        const token = await createAccessToken({ id: usuarioEncontrado._id, nombre: usuarioEncontrado.nombre });
+        const token = await createAccessToken({ _id: usuarioEncontrado._id, nombre: usuarioEncontrado.nombre });
 
         return res.cookie("token", token, { sameSite: "none", secure: true }).status(200).json(usuarioEncontrado);
 
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+}
+
+export const verificarUsuario = async (req, res) => {
+    try {
+        const { token } = req.cookies;
+
+        if (!token) return res.status(401).json({ message: "Error, no estás autenticado" });
+
+        const decoded = await validateToken(token);
+
+        const user = await usuarios.findById(decoded._id, { password: false });
+
+        return res.status(200).json({ usuario: user });
+    } catch (error) {
+        return res.status(400).json({ message: "Error, el token de inicio de sesión no es válido", error });
     }
 }
 
