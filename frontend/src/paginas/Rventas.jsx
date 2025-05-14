@@ -9,7 +9,7 @@ import {
     Center,
     ButtonGroup,
 } from '@chakra-ui/react';
-import { Toaster, toaster } from "../componentes/toaster.jsx";
+import { toaster } from "../componentes/toaster.jsx";
 import BarraSuperior from '../componentes/BarraSuperior.jsx';
 import { useState, useEffect } from 'react';
 import { useMaterialReactTable, MaterialReactTable } from 'material-react-table';
@@ -297,9 +297,6 @@ export default function Rventas() {
                     </HStack>
                 )
             }
-
-
-            <Toaster />
 
             <Escaner mostrar={mostrarEscaner} setMostrar={setMostrarEscaner} añadirProductoATabla={añadirProductoATabla} />
 

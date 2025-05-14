@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { ContextProvider } from './ContextProvider.jsx';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
+import { Toaster } from "./componentes/toaster.jsx";
 
 //imports pages
 import Login from './paginas/Login.jsx';
@@ -22,6 +23,7 @@ import './App.css'
 function App() {
   return (
     <ChakraProvider value={defaultSystem}>
+      <Toaster />
       <ContextProvider>
         <BrowserRouter>
           <Routes>
